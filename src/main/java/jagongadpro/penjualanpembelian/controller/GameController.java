@@ -19,4 +19,5 @@ public class GameController {
         System.out.println("masukkk");
         return ResponseEntity.ok().body("Hello World");
     }
+
 }
