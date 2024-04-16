@@ -26,4 +26,12 @@ public class GameControllerTest {
                 .andExpect(content().string("Hello World"));
 
     }
+
+    @Test
+    public void testGetGame() throws Exception {
+        mockMvc.perform(get("/api/games/all"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello World"));
+
+    }
 }
