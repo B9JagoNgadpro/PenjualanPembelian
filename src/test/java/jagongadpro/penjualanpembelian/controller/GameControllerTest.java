@@ -1,24 +1,29 @@
 package jagongadpro.penjualanpembelian.controller;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.junit.jupiter.api.Assertions.*;
-@WebMvcTest(GameController.class)
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import static org.springframework.test.web.servlet.MockMvcBuilder.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+@AutoConfigureMockMvc
+@SpringBootTest
 public class GameControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @Test
     public void testCreateGame() throws Exception {
-        // Perform GET request to /create endpoint
         mockMvc.perform(post("/api/games"))
-                .andExpect(status().isOk()) // Verify HTTP status is OK
-                .andExpect(result -> {
-                    String response = result.getResponse().getContentAsString();
-                    assertEquals(response, "Hello World");
-                });
+                .andExpect(status().isOk())
+                .andExpect(content().string("Hello World"));
 
     }
 }
