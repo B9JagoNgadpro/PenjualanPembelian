@@ -29,10 +29,13 @@ dependencies {
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.mockito:mockito-core:4.2.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
+	scanForTestClasses = false
+	include "**/*Test.class"
 }
 tasks.test {
 	useJUnitPlatform()
