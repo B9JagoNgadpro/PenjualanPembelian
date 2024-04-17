@@ -25,7 +25,6 @@ class CreateGameRequestTest {
     @Test
     void createGameRequestSuccess(){
         CreateGameRequest game = new CreateGameRequest();
-        game.setId("abc");
         game.setNama("Game1");
         game.setDeskripsi("deskripsi");
         game.setStok(10);
@@ -37,7 +36,6 @@ class CreateGameRequestTest {
     @Test
     void createBlankNameGameRequest(){
         CreateGameRequest game = new CreateGameRequest();
-        game.setId("abc");
         game.setDeskripsi("deskripsi");
         game.setStok(10);
         game.setHarga(10000);
@@ -53,7 +51,6 @@ class CreateGameRequestTest {
     @Test
     void createHargaNotValid(){
         CreateGameRequest game = new CreateGameRequest();
-        game.setId("abc");
         game.setNama("Game1");
         game.setDeskripsi("deskripsi");
         game.setStok(100);
@@ -70,7 +67,6 @@ class CreateGameRequestTest {
     @Test
     void createStokNotValid(){
         CreateGameRequest game = new CreateGameRequest();
-        game.setId("abc");
         game.setNama("Game1");
         game.setDeskripsi("deskripsi");
         game.setStok(-22);

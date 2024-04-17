@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateGameRequest {
-    @Id
-    String id;
-
     @NotBlank
     String nama;
 
