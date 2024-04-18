@@ -1,10 +1,6 @@
 package jagongadpro.penjualanpembelian.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -12,8 +8,10 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@Table(name = "games")
 public class Game {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     String id;
 
     String nama;
