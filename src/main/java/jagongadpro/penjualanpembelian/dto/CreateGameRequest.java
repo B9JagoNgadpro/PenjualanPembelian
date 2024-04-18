@@ -1,9 +1,7 @@
 package jagongadpro.penjualanpembelian.dto;
 
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,11 +18,13 @@ public class CreateGameRequest {
     String deskripsi;
 
     @Positive
+    @NotNull
     Integer harga;
 
     String kategori;
 
     @PositiveOrZero
+    @NotNull
     Integer stok;
 
 }
