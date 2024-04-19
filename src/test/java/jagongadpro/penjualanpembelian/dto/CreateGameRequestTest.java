@@ -24,25 +24,25 @@ class CreateGameRequestTest {
     }
     @Test
     void createGameRequestSuccess(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setNama("Game1");
-        game.setDeskripsi("deskripsi");
-        game.setStok(10);
-        game.setHarga(10000);
-        validate(game);
+        CreateGameRequest request = new CreateGameRequest();
+        request.setNama("Game1");
+        request.setDeskripsi("deskripsi");
+        request.setStok(10);
+        request.setHarga(10000);
+        validate(request);
 
     }
 
     @Test
     void createBlankNameGameRequest(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setDeskripsi("deskripsi");
-        game.setStok(10);
-        game.setHarga(10000);
-        game.setNama("");
+        CreateGameRequest request = new CreateGameRequest();
+        request.setDeskripsi("deskripsi");
+        request.setStok(10);
+        request.setHarga(10000);
+        request.setNama("");
 
         Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
-            validate(game);
+            validate(request);
         });
 
         assertEquals("nama: must not be blank", exception.getMessage());
@@ -51,14 +51,14 @@ class CreateGameRequestTest {
 
     @Test
     void createHargaNotValid(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setNama("Game1");
-        game.setDeskripsi("deskripsi");
-        game.setStok(100);
-        game.setHarga(0);
+        CreateGameRequest request = new CreateGameRequest();
+        request.setNama("Game1");
+        request.setDeskripsi("deskripsi");
+        request.setStok(100);
+        request.setHarga(0);
 
         Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
-            validate(game);
+            validate(request);
         });
 
         assertEquals("harga: must be greater than 0", exception.getMessage());
@@ -66,15 +66,15 @@ class CreateGameRequestTest {
     }
     @Test
     void createHargaBlank(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setNama("Game1");
-        game.setDeskripsi("deskripsi");
-        game.setStok(100);
+        CreateGameRequest request = new CreateGameRequest();
+        request.setNama("Game1");
+        request.setDeskripsi("deskripsi");
+        request.setStok(100);
 
 
 
         Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
-            validate(game);
+            validate(request);
         });
 
         assertEquals("harga: must not be null", exception.getMessage());
@@ -83,14 +83,14 @@ class CreateGameRequestTest {
 
     @Test
     void createStokNotValid(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setNama("Game1");
-        game.setDeskripsi("deskripsi");
-        game.setStok(-22);
-        game.setHarga(10000);
+        CreateGameRequest request = new CreateGameRequest();
+        request.setNama("Game1");
+        request.setDeskripsi("deskripsi");
+        request.setStok(-22);
+        request.setHarga(10000);
 
         Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
-            validate(game);
+            validate(request);
         });
 
         assertEquals("stok: must be greater than or equal to 0", exception.getMessage());
@@ -98,13 +98,13 @@ class CreateGameRequestTest {
     }
     @Test
     void createStokBlank(){
-        CreateGameRequest game = new CreateGameRequest();
-        game.setNama("Game1");
-        game.setDeskripsi("deskripsi");
-        game.setHarga(10000);
+        CreateGameRequest request = new CreateGameRequest();
+        request.setNama("Game1");
+        request.setDeskripsi("deskripsi");
+        request.setHarga(10000);
 
         Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
-            validate(game);
+            validate(request);
         });
 
         assertEquals("stok: must not be null", exception.getMessage());
