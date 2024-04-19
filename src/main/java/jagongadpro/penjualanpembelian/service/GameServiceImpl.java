@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class GameServiceImpl implements GameService{
     @Autowired
@@ -18,12 +20,8 @@ public class GameServiceImpl implements GameService{
     @Transactional
     public void create(CreateGameRequest request) {
         validationService.validate(request);
-        Game game = new Game();
-        game.setNama(request.getNama());
-        game.setStok(request.getStok());
-        game.setKategori(request.getKategori());
-        game.setHarga(request.getHarga());
-        game.setDeskripsi(request.getDeskripsi());
+        Game game = new Game.GameBuilder().nama(request.getNama()).stok(request.getStok()).kategori(request.getKategori()).harga(request.getHarga()).deskripsi(request.getDeskripsi()).build();
         gameRepository.save(game);
+
     }
 }
