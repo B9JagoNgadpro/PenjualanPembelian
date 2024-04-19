@@ -3,6 +3,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
 import jagongadpro.penjualanpembelian.dto.GameResponse;
 import jagongadpro.penjualanpembelian.dto.WebResponse;
+import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.repository.GameRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,10 +74,24 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testGetGame() throws Exception {
-        mockMvc.perform(get("/api/games/all"))
-                .andExpect(status().isOk())
-                .andExpect(content().string("Hello World"));
+    public void testGetAllGame() throws Exception {
+        for (int i = 0; i < 5; i++) {
+            Game game = new Game.GameBuilder().nama("Game "+ i).stok(10).harga(1000).kategori("action").deskripsi("bagus").build();
+            gameRepository.save(game);
+        }
+
+        mockMvc.perform(
+                get("/api/games/all")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        ).andExpectAll(
+                status().isOk()
+        ).andDo(result -> {
+            WebResponse<List<GameResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+            });
+            assertNull(response.getErrors());
+            assertEquals(5, response.getData().size());
+        });
 
     }
 
