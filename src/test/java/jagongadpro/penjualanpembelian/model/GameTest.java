@@ -1,48 +1,19 @@
 package jagongadpro.penjualanpembelian.model;
 
+import jagongadpro.penjualanpembelian.model.Game;
 import org.junit.jupiter.api.Test;
 
-import org.springframework.boot.test.context.SpringBootTest;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-
-import static org.junit.jupiter.api.Assertions.*;
-@SpringBootTest
-
-class GameTest {
-    Game game = new Game();
+public class GameTest {
 
     @Test
-    void testGetterSetterNama(){
-        game.setNama("Game1");
-        assertEquals("Game1", game.getNama());
+    void MakeGameBuilder(){
+        Game game1 = new Game.GameBuilder().nama("Game1").stok(10).harga(1000).kategori("action").deskripsi("bagus").build();
+        assertEquals("Game1", game1.getNama());
+        assertEquals(1000, game1.getHarga());
+        assertEquals(10, game1.getStok());
+        assertEquals("action", game1.getKategori());
+        assertEquals("bagus", game1.getDeskripsi());
     }
-
-    @Test
-    void testGetterSetterId(){
-        game.setId("abc");
-        assertEquals("abc", game.getId());
-    }
-    @Test
-    void testGetterSetterStok(){
-        game.setStok(10);
-        assertEquals(10, game.getStok());
-    }
-
-    @Test
-    void testGetterSetterHarga(){
-        game.setHarga(1000);
-        assertEquals(1000, game.getHarga());
-    }
-
-    @Test
-    void testGetterSetterDeskripsi(){
-        game.setDeskripsi("bagus");
-        assertEquals("bagus", game.getDeskripsi());
-    }
-    @Test
-    void testGetterSetterKategori(){
-        game.setKategori("action");
-        assertEquals("action", game.getKategori());
-    }
-
 }
