@@ -38,6 +38,11 @@ public class GameServiceImpl implements GameService{
                 .stok(game.getStok())
                 .build();
     }
+    @Transactional(readOnly = true)
+    public List<GameResponse> getAll() {
+        List<Game> games = gameRepository.findAll();
+        return games.stream().map(this::toGameResponse).toList();
+    }
 
 
 
