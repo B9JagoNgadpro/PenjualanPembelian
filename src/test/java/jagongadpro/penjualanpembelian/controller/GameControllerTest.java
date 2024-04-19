@@ -1,7 +1,10 @@
 package jagongadpro.penjualanpembelian.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
+import jagongadpro.penjualanpembelian.dto.GameResponse;
 import jagongadpro.penjualanpembelian.dto.WebResponse;
+import jagongadpro.penjualanpembelian.repository.GameRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.MockMvcBuilder.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -22,6 +26,13 @@ public class GameControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private  GameRepository gameRepository;
+    @BeforeEach
+    void setUp() {
+        gameRepository.deleteAll();
+    }
     @Test
     public void testCreateGameSuccess() throws Exception {
         CreateGameRequest request = new CreateGameRequest();
@@ -32,10 +43,15 @@ public class GameControllerTest {
         mockMvc.perform(post("/api/games").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isOk())
                 .andDo(result -> {
-                    WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                    WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                     });
+                    assertNull(response.getErrors());
+                    assertEquals("Game1", response.getData().getNama());
+                    assertEquals("deskripsi", response.getData().getDeskripsi());
+                    assertEquals(10, response.getData().getStok());
+                    assertEquals(10000, response.getData().getHarga());
 
-                    assertEquals("OK", response.getData());
+                    assertTrue(gameRepository.existsById(response.getData().getId()));
                 });
     }
 
@@ -48,9 +64,8 @@ public class GameControllerTest {
         mockMvc.perform(post("/api/games").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
                 .andExpectAll(status().isBadRequest())
                 .andDo(result -> {
-                    WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
+                    WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
                     });
-
                     assertEquals("nama: must not be blank", response.getErrors());
                 });
     }

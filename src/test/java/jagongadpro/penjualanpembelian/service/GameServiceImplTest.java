@@ -1,6 +1,7 @@
 package jagongadpro.penjualanpembelian.service;
 
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
+import jagongadpro.penjualanpembelian.dto.GameResponse;
 import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jakarta.validation.ConstraintViolationException;
