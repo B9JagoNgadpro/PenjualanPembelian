@@ -58,5 +58,11 @@ class GameServiceImplTest {
 
         verify(gameRepository,times(0)).save(any(Game.class));
     }
+    @Test
+    void getAll(){
+        List<GameResponse> games = gameService.getAll();
+        verify(gameRepository,times(1)).findAll();
+
+    }
 
 }
