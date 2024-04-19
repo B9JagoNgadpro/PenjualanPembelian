@@ -29,11 +29,10 @@ public class GameController {
         return WebResponse.<GameResponse>builder().data(response).build();
     }
 
-    @GetMapping(value = "/api/games/all")
-    public ResponseEntity<String>GetGames(){
-        return ResponseEntity.ok().body("Hello World");
+    @GetMapping(value = "/api/games/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    public WebResponse<List<GameResponse>> GetAllProducts(){
+        return WebResponse.<List<GameResponse>>builder().data(gameService.getAll()).build();
     }
-
     @GetMapping(value = "/api/games")
     public ResponseEntity<String> FilterGames(){
         return ResponseEntity.ok().body("Hello World");
