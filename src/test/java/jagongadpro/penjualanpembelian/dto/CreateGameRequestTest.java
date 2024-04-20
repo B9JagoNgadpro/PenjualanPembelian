@@ -24,12 +24,13 @@ class CreateGameRequestTest {
     }
     @Test
     void createGameRequestSuccess(){
-        CreateGameRequest request = new CreateGameRequest();
-        request.setNama("Game1");
-        request.setDeskripsi("deskripsi");
-        request.setStok(10);
-        request.setHarga(10000);
+        CreateGameRequest request = CreateGameRequest.builder().nama("Game1").deskripsi("deskripsi").stok(10).harga(10000).kategori("action").build();
         validate(request);
+        assertEquals(request.getNama(), "Game1");
+        assertEquals(request.getDeskripsi(), "deskripsi");
+        assertEquals(10, request.getStok());
+        assertEquals(10000, request.getHarga());
+        assertEquals("action", request.getKategori());
 
     }
 
