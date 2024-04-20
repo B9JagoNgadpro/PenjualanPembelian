@@ -1,6 +1,7 @@
 package jagongadpro.penjualanpembelian.controller;
 
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
+import jagongadpro.penjualanpembelian.dto.FilterGameRequest;
 import jagongadpro.penjualanpembelian.dto.GameResponse;
 import jagongadpro.penjualanpembelian.dto.WebResponse;
 import jagongadpro.penjualanpembelian.service.GameService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,18 +26,28 @@ public class GameController {
     GameService gameService;
 
     @PostMapping(value = "/api/games", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request){
+    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request) {
         GameResponse response = gameService.create(request);
         return WebResponse.<GameResponse>builder().data(response).build();
     }
 
     @GetMapping(value = "/api/games/all", produces = MediaType.APPLICATION_JSON_VALUE)
-    public WebResponse<List<GameResponse>> GetAllProducts(){
+    public WebResponse<List<GameResponse>> GetAllProducts() {
         return WebResponse.<List<GameResponse>>builder().data(gameService.getAll()).build();
     }
-    @GetMapping(value = "/api/games")
-    public ResponseEntity<String> FilterGames(){
-        return ResponseEntity.ok().body("Hello World");
-    }
 
+    @GetMapping(value = "/api/games")
+    public WebResponse<List<GameResponse>> FilterGame(@RequestParam(value = "nama", required = false) String nama,
+                                                      @RequestParam(value = "kategori", required = false) String kategori,
+                                                      @RequestParam(value = "harga", required = false) Integer harga) {
+        FilterGameRequest request = FilterGameRequest.builder()
+                .nama(nama)
+                .harga(harga)
+                .kategori(kategori)
+                .build();
+        return WebResponse.<List<GameResponse>>builder()
+                .data(gameService.filter(request))
+                .build();
+
+    }
 }
