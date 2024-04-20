@@ -1,6 +1,7 @@
 package jagongadpro.penjualanpembelian.service;
 
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
+import jagongadpro.penjualanpembelian.dto.FilterGameRequest;
 import jagongadpro.penjualanpembelian.dto.GameResponse;
 import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.repository.GameRepository;
@@ -13,6 +14,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.validation.ConstraintViolation;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.*;
 
@@ -62,6 +64,14 @@ class GameServiceImplTest {
     void getAll(){
         List<GameResponse> games = gameService.getAll();
         verify(gameRepository,times(1)).findAll();
+
+    }
+
+    @Test
+    void filter(){
+        FilterGameRequest request = FilterGameRequest.builder().nama("Games").build();
+        List<GameResponse> games = gameService.filter(request);
+        verify(gameRepository, times(1)).findAll(any(Specification.class));
 
     }
 
