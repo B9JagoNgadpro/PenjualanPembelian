@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.validation.ConstraintViolation;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -72,6 +73,22 @@ class GameServiceImplTest {
         FilterGameRequest request = FilterGameRequest.builder().nama("Games").build();
         List<GameResponse> games = gameService.filter(request);
         verify(gameRepository, times(1)).findAll(any(Specification.class));
+
+    }
+    @Test
+    void getByIdTestSuccess(){
+        Game game1 = new Game.GameBuilder().nama("Game1").build();
+        doReturn(Optional.of(game1)).when(gameRepository).findById("id");
+        GameResponse response = gameService.getById("id");
+        assertNotNull(response);
+        assertEquals(response.getNama(), "Game1");
+
+    }
+
+    @Test
+    void getByIdTestFailed(){
+
+        assertThrows(ResponseStatusException.class, ()->gameService.getById("id"));
 
     }
 
