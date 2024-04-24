@@ -148,4 +148,29 @@ public class GameControllerTest {
                 });
     }
 
+    @Test
+    public void getByIdSuccess() throws  Exception{
+        Game game = new Game.GameBuilder().nama("test").build();
+        gameRepository.save(game);
+        String id = game.getId();
+        mockMvc.perform(get("/api/games/"+id).contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isOk())
+                .andDo(result -> {
+                    WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+                    assertNotNull(response.getData());
+                    assertNull(response.getErrors());
+                    assertEquals(response.getData().getNama(), "test");
+                });
+    }
+    @Test
+    public void getByIdNotFound() throws  Exception{
+
+        mockMvc.perform(get("/api/games/abc").contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isNotFound())
+                .andDo(result -> {
+                    WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+                    assertNull(response.getData());
+                    assertNotNull(response.getErrors());
+                    assertEquals(response.getErrors(), "Game tidak ditemukan");
+                });
+    }
+
 }
