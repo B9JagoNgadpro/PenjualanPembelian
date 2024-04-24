@@ -11,4 +11,6 @@ public interface GameService {
     public List<GameResponse> getAll();
     List<GameResponse> filter(FilterGameRequest request);
 
+    GameResponse getById(String id);
+
 }

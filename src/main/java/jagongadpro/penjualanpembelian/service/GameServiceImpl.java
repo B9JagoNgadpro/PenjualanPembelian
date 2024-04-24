@@ -8,8 +8,10 @@ import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,6 +74,11 @@ public class GameServiceImpl implements GameService{
         return  response;
     }
 
+    @Transactional(readOnly = true)
+    public GameResponse getById(String id) {
+        Game game = gameRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Game tidak ditemukan"));
+        return toGameResponse(game);
+    }
 
 
 }
