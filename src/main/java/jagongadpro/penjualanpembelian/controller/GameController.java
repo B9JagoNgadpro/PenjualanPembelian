@@ -50,4 +50,10 @@ public class GameController {
                 .build();
 
     }
+
+    @GetMapping(value = "/api/games/{id}")
+    public WebResponse<GameResponse> getGameById(@PathVariable("id") String id) {
+        GameResponse gameResponse = gameService.getById(id);
+        return WebResponse.<GameResponse>builder().data(gameResponse).build();
+    }
 }
