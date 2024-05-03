@@ -3,10 +3,12 @@ package jagongadpro.penjualanpembelian.service;
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
 import jagongadpro.penjualanpembelian.dto.FilterGameRequest;
 import jagongadpro.penjualanpembelian.dto.GameResponse;
+import jagongadpro.penjualanpembelian.dto.GameTransaksiResponse;
 import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -78,6 +80,18 @@ public class GameServiceImpl implements GameService{
     public GameResponse getById(String id) {
         Game game = gameRepository.findById(id).orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"Game tidak ditemukan"));
         return toGameResponse(game);
+    }
+
+    @Transactional(readOnly = true)
+    public GameTransaksiResponse countGamePrice(String key, Integer quantity){
+        Game game = gameRepository.findById(key).orElseThrow( ()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Game tidak ditemukan"));
+        Integer total = quantity * game.getHarga();
+        GameTransaksiResponse gameTransaksiResponse = new GameTransaksiResponse();
+        gameTransaksiResponse.setNama(game.getNama());
+        gameTransaksiResponse.setQuantity(quantity);
+        gameTransaksiResponse.setTotal(total);
+        gameTransaksiResponse.setHargaSatuan(game.getHarga());
+        return gameTransaksiResponse;
     }
 
 
