@@ -43,7 +43,7 @@ public class GameControllerTest {
         request.setDeskripsi("deskripsi");
         request.setStok(10);
         request.setHarga(10000);
-        mockMvc.perform(post("/api/games").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(post("/api/games/create").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)).header("Authorization", "Bearer token"))
                 .andExpectAll(status().isOk())
                 .andDo(result -> {
                     WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -64,7 +64,7 @@ public class GameControllerTest {
         request.setDeskripsi("deskripsi");
         request.setHarga(10000);
         request.setStok(100);
-        mockMvc.perform(post("/api/games").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)))
+        mockMvc.perform(post("/api/games/create").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(request)).header("Authorization", "Bearer Token"))
                 .andExpectAll(status().isBadRequest())
                 .andDo(result -> {
                     WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -81,7 +81,7 @@ public class GameControllerTest {
         }
 
         mockMvc.perform(
-                get("/api/games/all")
+                get("/api/games/get-all")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpectAll(
@@ -98,7 +98,7 @@ public class GameControllerTest {
     @Test
     public void testFilterGameNotFound() throws Exception {
 
-        mockMvc.perform(get("/api/games").param("name", "ABC").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/games/get").param("name", "ABC").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
                     WebResponse<List<GameResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -116,7 +116,7 @@ public class GameControllerTest {
             Game game = new Game.GameBuilder().nama("Game "+ i).stok(10).harga(1000).kategori("action").deskripsi("bagus").build();
             gameRepository.save(game);
         }
-        mockMvc.perform(get("/api/games").param("nama", "Game").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/games/get").param("nama", "Game").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
                     WebResponse<List<GameResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -126,7 +126,7 @@ public class GameControllerTest {
                     assertEquals(response.getData().size(), 10);
 
                 });
-        mockMvc.perform(get("/api/games").param("harga", String.valueOf(1000)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/games/get").param("harga", String.valueOf(1000)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
                     WebResponse<List<GameResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {
@@ -136,7 +136,7 @@ public class GameControllerTest {
                     assertEquals(response.getData().size(), 10);
 
                 });
-        mockMvc.perform(get("/api/games").param("kategori", "act").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/api/games/get").param("kategori", "act").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(result -> {
                     WebResponse<List<GameResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {

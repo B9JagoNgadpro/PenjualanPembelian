@@ -25,18 +25,18 @@ public class GameController {
     @Autowired
     GameService gameService;
 
-    @PostMapping(value = "/api/games", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request) {
+    @PostMapping(value = "/api/games/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request,  @RequestHeader("Authorization") String bearerToken) {
         GameResponse response = gameService.create(request);
         return WebResponse.<GameResponse>builder().data(response).build();
     }
 
-    @GetMapping(value = "/api/games/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/api/games/get-all", produces = MediaType.APPLICATION_JSON_VALUE)
     public WebResponse<List<GameResponse>> GetAllProducts() {
         return WebResponse.<List<GameResponse>>builder().data(gameService.getAll()).build();
     }
 
-    @GetMapping(value = "/api/games")
+    @GetMapping(value = "/api/games/get")
     public WebResponse<List<GameResponse>> FilterGame(@RequestParam(value = "nama", required = false) String nama,
                                                       @RequestParam(value = "kategori", required = false) String kategori,
                                                       @RequestParam(value = "harga", required = false) Integer harga) {
