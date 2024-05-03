@@ -3,6 +3,7 @@ package jagongadpro.penjualanpembelian.service;
 import jagongadpro.penjualanpembelian.dto.CreateGameRequest;
 import jagongadpro.penjualanpembelian.dto.FilterGameRequest;
 import jagongadpro.penjualanpembelian.dto.GameResponse;
+import jagongadpro.penjualanpembelian.dto.GameTransaksiResponse;
 import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jakarta.validation.ConstraintViolationException;
@@ -15,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import jakarta.validation.ConstraintViolation;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -90,6 +92,28 @@ class GameServiceImplTest {
 
         assertThrows(ResponseStatusException.class, ()->gameService.getById("id"));
 
+    }
+
+    @Test
+    void countGamePriceSuccess(){
+        String key = "key";
+        Integer quantity = 2;
+
+        when(gameRepository.findById(key)).thenReturn(Optional.of(new Game.GameBuilder().harga(10000).build()));
+        GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key,quantity);
+        assertEquals(gameTransaksiResponse.getQuantity(),2);
+        assertEquals(gameTransaksiResponse.getHargaSatuan(), 10000);
+        assertEquals(gameTransaksiResponse.getTotal(), 20000);
+    }
+
+    @Test
+    void countGamePriceNotFound(){
+        String key = "key";
+        Integer quantity = 2;
+
+         assertThrows(ResponseStatusException.class, () -> {
+            gameService.countGamePrice(key, quantity);
+        });
     }
 
 }
