@@ -111,4 +111,8 @@ class CreateGameRequestTest {
         assertEquals("stok: must not be null", exception.getMessage());
 
     }
+    @Test
+    void testToString(){
+        assertNotNull(CreateGameRequest.builder().toString());
+    }
 }

@@ -3,6 +3,7 @@ package jagongadpro.penjualanpembelian.dto;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class FilterGameRequestTest {
     FilterGameRequest request = new FilterGameRequest();
@@ -30,5 +31,10 @@ public class FilterGameRequestTest {
         assertEquals("Game2", request.getNama());
         assertEquals(2000, request.getHarga());
 
+    }
+
+    @Test
+    void testToString(){
+        assertNotNull(FilterGameRequest.builder().toString());
     }
 }

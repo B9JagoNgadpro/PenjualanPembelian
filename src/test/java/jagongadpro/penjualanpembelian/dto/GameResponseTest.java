@@ -38,6 +38,11 @@ class GameResponseTest {
     }
 
     @Test
+    void testToString(){
+        assertNotNull(GameResponse.builder().toString());
+    }
+
+    @Test
     void getterSetterStok() {
         gameResponse.setStok(100);
         assertEquals(gameResponse.getStok(),100);
