@@ -3,6 +3,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.service.GameService;
+import jagongadpro.penjualanpembelian.service.TransaksiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 @AutoConfigureMockMvc
-@WebMvcTest(TransaksiController.class)
+@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 public class TransaksiControllerTest {
     @Autowired
@@ -44,6 +45,9 @@ public class TransaksiControllerTest {
 
     @MockBean
     RestTemplate restTemplate;
+
+    @MockBean
+    TransaksiService transaksiService;
 
     @Test
     public void GetTransaksi() throws Exception {
@@ -132,5 +136,57 @@ public class TransaksiControllerTest {
 
                 });
 
+    }
+    @Test
+    void createTransaksiSuccess() throws  Exception{
+        String token ="token";
+        String email = "example@gmail.com";
+        Map<String, Integer> items = new HashMap<>();
+        items.put("idGames", 9);
+        KeranjangDto keranjangResponse = new KeranjangDto();
+        keranjangResponse.setEmail(email);
+        keranjangResponse.setItems(items);
+        keranjangResponse.setTotalPrice(90000);
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                eq(KeranjangDto.class)))
+                .thenReturn(ResponseEntity.ok(keranjangResponse));
+        when(transaksiService.createTransaksi(keranjangResponse, "example@gmail.com", token)).thenReturn(TransaksiResponse.builder().games(keranjangResponse.getItems()).emailPembeli(email).totalPrice(keranjangResponse.getTotalPrice()).build());
+        mockMvc.perform(post("/api/transaksi/"+email).header("Authorization",token).contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isCreated())
+                .andDo(result -> {
+                   WebResponse<TransaksiResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<TransaksiResponse>>() {
+                   }) ;
+                   assertNotNull(response.getData());
+                   assertNull(response.getErrors());
+                   assertEquals(response.getData().getEmailPembeli(), "example@gmail.com");
+                });
+    }
+
+    @Test
+    void createTransaksiFailedKeranjangNotFound() throws  Exception{
+        String token ="token";
+        String email = "example@gmail.com";
+        Map<String, Integer> items = new HashMap<>();
+        items.put("idGames", 9);
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(),
+                eq(KeranjangDto.class)))
+                .thenReturn(ResponseEntity.notFound().build());
+         mockMvc.perform(post("/api/transaksi/"+email).header("Authorization",token).contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isNotFound())
+                .andDo(result -> {
+                    WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<String>>() {
+                    }) ;
+                    assertNull(response.getData());
+                    assertNotNull(response.getErrors());
+                    assertEquals(response.getErrors(), "Keranjang tidak ditemukan");
+                });
+    }
+    @Test
+    void createTransaksiFailedNotAuthenticated() throws  Exception {
+        mockMvc.perform(post("/api/transaksi/email").contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().is4xxClientError());
     }
 }
