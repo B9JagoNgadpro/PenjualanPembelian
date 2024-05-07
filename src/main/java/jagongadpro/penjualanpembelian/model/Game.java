@@ -3,6 +3,7 @@ package jagongadpro.penjualanpembelian.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
@@ -22,7 +23,7 @@ public class Game {
 
     private String kategori;
 
-
+    @Setter
     private Integer stok;
 
     public Game(GameBuilder builder){

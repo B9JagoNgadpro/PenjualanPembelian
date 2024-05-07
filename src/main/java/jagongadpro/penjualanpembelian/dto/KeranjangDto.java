@@ -17,6 +17,6 @@ public class KeranjangDto {
 
     private Map<String, Integer> items = new HashMap<>();
 
-    private double totalPrice;
+    private int totalPrice;
 
 }
