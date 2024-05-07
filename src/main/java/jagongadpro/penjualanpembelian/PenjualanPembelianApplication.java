@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootApplication()
+@SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 public class PenjualanPembelianApplication {
 
 	public static void main(String[] args) {
