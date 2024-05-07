@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 @AutoConfigureMockMvc
-@SpringBootTest
+@WebMvcTest(TransaksiController.class)
 @ExtendWith(MockitoExtension.class)
 public class TransaksiControllerTest {
     @Autowired
@@ -109,7 +109,7 @@ public class TransaksiControllerTest {
     }
 
     @Test
-    public void GetTransaksiGamelNotFound() throws Exception {
+    public void GetTransaksiGameNotFound() throws Exception {
         String email = "example@gmail.com";
         Map<String, Integer> items = new HashMap<>();
         items.put("idGames", 9);
