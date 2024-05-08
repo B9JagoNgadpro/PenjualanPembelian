@@ -15,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
@@ -50,6 +51,12 @@ public class TransaksiController {
         KeranjangDto keranjang = getKeranjangByEmail(email);
         TransaksiResponse transaksi= transaksiService.createTransaksi(keranjang, email, token);
         return WebResponse.<TransaksiResponse>builder().data(transaksi).build();
+    }
+
+    @GetMapping("/{email}")
+    public WebResponse<List<RiwayatTransaksiResponse>>  getRiwayatTransaksiByEmail(@PathVariable String email, @RequestHeader("Authorization") String token){
+        List<RiwayatTransaksiResponse> riwayatTransaksi = transaksiService.getTransaksiByEmail(email);
+        return WebResponse.<List<RiwayatTransaksiResponse>>builder().data(riwayatTransaksi).build();
     }
 
     public KeranjangDto getKeranjangByEmail(String email){
