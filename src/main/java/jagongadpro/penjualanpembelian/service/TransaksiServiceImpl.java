@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -27,6 +29,9 @@ public class TransaksiServiceImpl implements  TransaksiService{
 
     @Autowired
     GameRepository gameRepository;
+
+    @Autowired
+    GameService gameService;
     @Transactional
     public TransaksiResponse createTransaksi(KeranjangDto keranjang, String email, String token){
         //tembah auth buat dptin saldonya
@@ -83,5 +88,28 @@ public class TransaksiServiceImpl implements  TransaksiService{
                 .totalPrice(transaksi.getTotalPrice())
                 .build();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<RiwayatTransaksiResponse> getTransaksiByEmail(String email) {
+        List<Transaksi> transaksi = transaksiRepository.findAllByEmailPembeli(email);
+        return transaksi.stream().map(this::toRiwayatTransaksiResponse).toList();
+
+    }
+
+    public RiwayatTransaksiResponse toRiwayatTransaksiResponse(Transaksi transaksi){
+        Map<String, Integer> listGames= transaksi.getGames();
+        ArrayList<GameTransaksiResponse> listGameTransaksiResponse = new ArrayList<>();
+        for (String key : listGames.keySet()) {
+            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, listGames.get(key));
+            listGameTransaksiResponse.add(gameTransaksiResponse);
+        }
+        return RiwayatTransaksiResponse.builder()
+                .tanggal(transaksi.getTanggal())
+                .listGames(listGameTransaksiResponse)
+                .emailPembeli(transaksi.getEmailPembeli())
+                .id(transaksi.getId())
+                .totalPrice(transaksi.getTotalPrice())
+                .build();
     }
 }
