@@ -19,9 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,6 +38,8 @@ class TransaksiServiceImplTest {
 
     @Mock
     GameRepository gameRepository;
+    @Mock
+    GameService gameService;
 
     @Test
     void createTransaksiSuccess(){
@@ -169,6 +169,26 @@ class TransaksiServiceImplTest {
         when(gameRepository.findById("id")).thenReturn(Optional.of(game));
         assertEquals(game.getStok(),1);
         assertThrows(ResponseStatusException.class, ()-> transaksiService.createTransaksi(keranjangDto, email, token));
+    }
+    @Test
+    void testGetTransaksiByEmailMethod(){
+        String email = "email";
+
+        Map<String, Integer> games = new HashMap<>();
+        games.put("id", 2);
+        List<Transaksi> listTransaksi = new ArrayList<>();
+        listTransaksi.add(Transaksi.builder().emailPembeli(email).games(games).totalPrice(10000).id("id-1").build());
+        when(transaksiRepository.findAllByEmailPembeli(email)).thenReturn(listTransaksi);
+
+        GameTransaksiResponse gameTransaksiResponse = new GameTransaksiResponse();
+        gameTransaksiResponse.setNama("nama");
+        gameTransaksiResponse.setHargaSatuan(2000);
+        when(gameService.countGamePrice("id",2)).thenReturn(gameTransaksiResponse);
+
+        List<RiwayatTransaksiResponse> riwayat = transaksiService.getTransaksiByEmail(email);
+        assertNotNull(riwayat);
+        assertEquals(riwayat.size(),1);
+        assertEquals(riwayat.get(0).getEmailPembeli(), email);
     }
 
 

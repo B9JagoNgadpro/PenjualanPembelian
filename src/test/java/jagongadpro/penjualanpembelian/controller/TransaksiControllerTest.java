@@ -21,7 +21,9 @@ import org.springframework.web.server.ResponseStatusException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -188,5 +190,23 @@ public class TransaksiControllerTest {
     @Test
     void createTransaksiFailedNotAuthenticated() throws  Exception {
         mockMvc.perform(post("/api/transaksi/email").contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().is4xxClientError());
+    }
+
+    @Test
+    void getRiwayatTransaksiByEmail() throws  Exception{
+        String email = "email";
+        String token = "token";
+        ArrayList<RiwayatTransaksiResponse> riwayat = new ArrayList<>();
+        riwayat.add(RiwayatTransaksiResponse.builder().emailPembeli(email).build());
+        when(transaksiService.getTransaksiByEmail(email)).thenReturn(riwayat);
+        mockMvc.perform(get("/api/transaksi/"+email).header("Authorization", token)).andExpectAll(status().isOk())
+                .andDo(result -> {
+                   WebResponse<List<RiwayatTransaksiResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<List<RiwayatTransaksiResponse>>>() {
+                   });
+
+                   assertNotNull(response.getData());
+                   assertNull(response.getErrors());
+                   assertEquals(response.getData().get(0).getEmailPembeli(), email);
+                });
     }
 }
