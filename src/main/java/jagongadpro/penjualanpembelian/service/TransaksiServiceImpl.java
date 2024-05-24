@@ -9,6 +9,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -19,14 +20,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class TransaksiServiceImpl implements  TransaksiService{
     @Autowired
     TransaksiRepository transaksiRepository;
+
     @Autowired
     RestTemplate restTemplate;
-
+    @Autowired
+    RestTemplateService restTemplateService;
     @Autowired
     GameRepository gameRepository;
 
@@ -59,21 +63,9 @@ public class TransaksiServiceImpl implements  TransaksiService{
             gameRepository.save(game);
         }
 
-
-        //apus isi keranjang
-        headers = new HttpHeaders();
-        headers.add("Authorization", token);
-        entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Void> deleteKeranjangResponse= restTemplate.exchange("http://localhost:8081/api/cart/clear/"+email, HttpMethod.DELETE,entity, Void.class);
-
-        //kurangin saldo
-        headers = new HttpHeaders();
-        headers.add("Authorization", token);
-        Map<String, Integer> requestBody = new HashMap<>();
-        requestBody.put("saldo", user.getSaldo()- keranjang.getTotalPrice());
-        HttpEntity<Map<String, Integer>> requestEntity = new HttpEntity<>(requestBody, headers);
-        ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
-        ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange("http://localhost:8080/user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
+        CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
+        CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
+        CompletableFuture.allOf(deleteKeranjang, reduceSaldo).join();
 
         //bikin transaksi
 
@@ -89,6 +81,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
                 .build();
 
     }
+
 
     @Transactional(readOnly = true)
     public List<RiwayatTransaksiResponse> getTransaksiByEmail(String email) {

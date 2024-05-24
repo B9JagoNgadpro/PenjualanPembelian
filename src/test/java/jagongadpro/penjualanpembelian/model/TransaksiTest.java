@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class TransaksiTest {
     Date tanggal = new Date();
     Map<String,Integer> games = new HashMap<>();
-    Transaksi transaksi = Transaksi.builder().id("id").games(games).tanggal(tanggal).emailPembeli("email").totalPrice(50000).build();
+    Transaksi transaksi = Transaksi.builder().id("id").games(games).emailPembeli("email").totalPrice(50000).build();
 
     @Test
     void getterId(){

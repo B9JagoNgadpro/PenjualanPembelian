@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.stubbing.VoidAnswer1;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -40,6 +42,9 @@ class TransaksiServiceImplTest {
     GameRepository gameRepository;
     @Mock
     GameService gameService;
+
+    @Mock
+    RestTemplateService restTemplateService;
 
     @Test
     void createTransaksiSuccess(){
@@ -63,21 +68,24 @@ class TransaksiServiceImplTest {
                 any(),
                 eq(responseType)))
                 .thenReturn(ResponseEntity.ok().body(responseUser));
-        when(restTemplate.exchange(
-                eq("http://localhost:8081/api/cart/clear/"+email),
-                eq(HttpMethod.DELETE),
-                any(),
-                eq(Void.class)))
-                .thenReturn(ResponseEntity.ok().build());
-
-        ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
+//        when(restTemplate.exchange(
+//                eq("http://localhost:8081/api/cart/clear/"+email),
+//                eq(HttpMethod.DELETE),
+//                any(),
+//                eq(Void.class)))
+//                .thenReturn(ResponseEntity.ok().build());
+        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
+        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
+//        ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
         WebResponse<String> responseUpdateBalance = WebResponse.<String>builder().data("Ok").build();
-        when(restTemplate.exchange(
-                eq("http://localhost:8080/user/reduceBalance"),
-                eq(HttpMethod.PATCH),
-                any(),
-                eq(responseTypeBalance)))
-                 .thenReturn(ResponseEntity.ok().body(responseUpdateBalance));
+        CompletableFuture<WebResponse<String>> future1 = CompletableFuture.completedFuture(responseUpdateBalance);
+        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
+//        when(restTemplate.exchange(
+//                eq("http://localhost:8080/user/reduceBalance"),
+//                eq(HttpMethod.PATCH),
+//                any(),
+//                eq(responseTypeBalance)))
+//                 .thenReturn(ResponseEntity.ok().body(responseUpdateBalance));
         Game game = new Game.GameBuilder().stok(10).build();
         when(gameRepository.findById("id")).thenReturn(Optional.of(game));
 
