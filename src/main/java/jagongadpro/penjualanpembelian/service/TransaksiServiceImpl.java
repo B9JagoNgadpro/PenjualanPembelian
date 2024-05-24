@@ -43,7 +43,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
-        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange("http://localhost:8080/user/me", HttpMethod.GET, entity, responseType);
+        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange("http://34.87.70.230/user/me", HttpMethod.GET, entity, responseType);
         UserRequestDto user = userResponse.getBody().getData();
 
         //cek saldo kalo kureng throw except

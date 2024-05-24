@@ -47,7 +47,7 @@ class RestTemplateServiceTest {
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         ResponseEntity<Void> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(null);
-        when(restTemplate.exchange(eq("http://localhost:8081/api/cart/clear/" + email), eq(HttpMethod.DELETE), eq(entity), eq(Void.class)))
+        when(restTemplate.exchange(eq("http://35.213.132.17/api/cart/clear/" + email), eq(HttpMethod.DELETE), eq(entity), eq(Void.class)))
                 .thenReturn(responseEntity);
 
         CompletableFuture<Void> result = restTemplateService.deleteKeranjang(token, email);
@@ -71,7 +71,7 @@ class RestTemplateServiceTest {
         ResponseEntity<WebResponse<String>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(webResponse);
 
-        when(restTemplate.exchange(eq("http://localhost:8080/user/reduceBalance"), eq(HttpMethod.PATCH), any(HttpEntity.class), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(eq("http://34.87.70.230/user/reduceBalance"), eq(HttpMethod.PATCH), any(HttpEntity.class), any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);
 
         CompletableFuture<WebResponse<String>> result = restTemplateService.reduceSaldo(token, user, keranjang);

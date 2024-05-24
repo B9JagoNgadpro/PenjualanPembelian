@@ -63,7 +63,7 @@ public class TransaksiController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<KeranjangDto> response= restTemplate.exchange("http://localhost:8081/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
+        ResponseEntity<KeranjangDto> response= restTemplate.exchange("http://35.213.132.17/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
