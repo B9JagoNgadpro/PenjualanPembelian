@@ -25,7 +25,7 @@ public class Transaksi {
     private Map<String, Integer> games;
 
     @Temporal(TemporalType.DATE)
-    private Date tanggal = new Date();
+    private final Date tanggal = new Date();
 
     private  String emailPembeli;
     private double totalPrice;

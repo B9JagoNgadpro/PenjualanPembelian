@@ -26,7 +26,7 @@ public class GameController {
     GameService gameService;
 
     @PostMapping(value = "/api/games/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request,  @RequestHeader("Authorization") String bearerToken) {
+    public WebResponse<GameResponse> createProductPost(@RequestBody CreateGameRequest request) {
         GameResponse response = gameService.create(request);
         return WebResponse.<GameResponse>builder().data(response).build();
     }

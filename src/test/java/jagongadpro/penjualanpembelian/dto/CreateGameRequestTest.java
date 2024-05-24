@@ -1,6 +1,5 @@
 package jagongadpro.penjualanpembelian.dto;
 
-import jagongadpro.penjualanpembelian.model.Game;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Validator;
