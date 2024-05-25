@@ -4,6 +4,7 @@ import jagongadpro.penjualanpembelian.dto.KeranjangDto;
 import jagongadpro.penjualanpembelian.dto.UserRequestDto;
 import jagongadpro.penjualanpembelian.dto.WebResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,11 @@ import java.util.concurrent.CompletableFuture;
 
 @Service
 public class RestTemplateService {
+    @Value("${app.cart}")
+    String cart;
+
+    @Value("${app.auth}")
+    String auth;
     @Autowired
     RestTemplate restTemplate;
     @Async
@@ -27,7 +33,7 @@ public class RestTemplateService {
         headers.add("Authorization", token);
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Void> deleteKeranjangResponse= restTemplate.exchange("http://35.213.132.17/api/cart/clear/"+email, HttpMethod.DELETE,entity, Void.class);
+        ResponseEntity<Void> deleteKeranjangResponse= restTemplate.exchange(cart+"api/cart/clear/"+email, HttpMethod.DELETE,entity, Void.class);
         Void response = deleteKeranjangResponse.getBody();
         return CompletableFuture.completedFuture(response);
     }
@@ -40,7 +46,7 @@ public class RestTemplateService {
         requestBody.put("saldo", user.getSaldo()- keranjang.getTotalPrice());
         HttpEntity<Map<String, Integer>> requestEntity = new HttpEntity<>(requestBody, headers);
         ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
-        ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange("http://34.87.70.230/user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
+        ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange(auth+"user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
         WebResponse<String> newBalance = updateBalance.getBody();
         return CompletableFuture.completedFuture(newBalance);
     }
