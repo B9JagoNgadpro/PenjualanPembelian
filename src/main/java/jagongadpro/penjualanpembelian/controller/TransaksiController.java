@@ -37,10 +37,14 @@ public class TransaksiController {
 
         ArrayList<GameTransaksiResponse> listGame = new ArrayList<>();
         Map<String, Integer> listGames = keranjang.getItems();
-        for (String key : listGames.keySet()) {
-            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, listGames.get(key));
+        for (Map.Entry<String, Integer> entry : listGames.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, value);
             listGame.add(gameTransaksiResponse);
         }
+
         ListGameResponse listGameResponse = ListGameResponse.builder().listGames(listGame).totalPrice(keranjang.getTotalPrice()).build();
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
@@ -67,8 +71,7 @@ public class TransaksiController {
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
-        KeranjangDto keranjang = response.getBody();
-        return  keranjang;
+        return  response.getBody();
     }
 
 

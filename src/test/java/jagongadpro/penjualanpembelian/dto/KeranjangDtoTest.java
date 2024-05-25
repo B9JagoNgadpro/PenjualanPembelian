@@ -12,7 +12,7 @@ class KeranjangDtoTest {
     @Test
     void getterSetterEmail(){
        keranjangDto.setEmail("email");
-        assertEquals(keranjangDto.getEmail(), "email");
+        assertEquals("email", keranjangDto.getEmail());
     }
 
     @Test
@@ -24,7 +24,7 @@ class KeranjangDtoTest {
     @Test
     void getterSetterTotalPrice(){
         keranjangDto.setTotalPrice(90000);
-        assertEquals(keranjangDto.getTotalPrice(), 90000);
+        assertEquals(90000 , keranjangDto.getTotalPrice());
     }
 
 

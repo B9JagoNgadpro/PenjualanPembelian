@@ -65,15 +65,15 @@ class GameServiceImplTest {
     }
     @Test
     void getAll(){
-        List<GameResponse> games = gameService.getAll();
+        gameService.getAll();
         verify(gameRepository,times(1)).findAll();
 
     }
 
     @Test
     void filter(){
-        FilterGameRequest request = FilterGameRequest.builder().nama("Games").build();
-        List<GameResponse> games = gameService.filter(request);
+        FilterGameRequest request2 = FilterGameRequest.builder().nama("Games").build();
+        gameService.filter(request2);
         verify(gameRepository, times(1)).findAll(any(Specification.class));
 
     }

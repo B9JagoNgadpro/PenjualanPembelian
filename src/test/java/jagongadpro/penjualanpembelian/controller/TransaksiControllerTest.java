@@ -6,13 +6,11 @@ import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.*;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,14 +26,14 @@ import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.MockMvcBuilder.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+
 @AutoConfigureMockMvc
 @WebMvcTest(TransaksiController.class)
 @ExtendWith(MockitoExtension.class)
-public class TransaksiControllerTest {
+ class TransaksiControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -52,7 +50,7 @@ public class TransaksiControllerTest {
     TransaksiService transaksiService;
 
     @Test
-    public void GetTransaksi() throws Exception {
+     void GetTransaksi() throws Exception {
         String email = "example@gmail.com";
         Map<String, Integer> items = new HashMap<>();
         items.put("idGames", 9);
@@ -80,16 +78,16 @@ public class TransaksiControllerTest {
                     assertNotNull(response.getData());
                     assertNull(response.getErrors());
                     GameTransaksiResponse gameResponse = response.getData().getListGames().get(0);
-                    assertEquals(gameResponse.getNama(), "Example");
-                    assertEquals(gameResponse.getQuantity(), 9);
-                    assertEquals(gameResponse.getTotal(), 90000);
+                    assertEquals( "Example", gameResponse.getNama());
+                    assertEquals(9, gameResponse.getQuantity());
+                    assertEquals(90000, gameResponse.getTotal());
                 });
 
 
     }
 
     @Test
-    public void GetTransaksiEmailNotFound() throws Exception {
+     void GetTransaksiEmailNotFound() throws Exception {
         String email = "example@gmail.com";
         when(restTemplate.exchange(
                 anyString(),
@@ -104,14 +102,14 @@ public class TransaksiControllerTest {
                     });
                     assertNull(response.getData());
                     assertNotNull(response.getErrors());
-                    assertEquals(response.getErrors(), "Keranjang tidak ditemukan");
+                    assertEquals("Keranjang tidak ditemukan", response.getErrors());
                 });
 
 
     }
 
     @Test
-    public void GetTransaksiGameNotFound() throws Exception {
+     void GetTransaksiGameNotFound() throws Exception {
         String email = "example@gmail.com";
         Map<String, Integer> items = new HashMap<>();
         items.put("idGames", 9);
@@ -134,7 +132,7 @@ public class TransaksiControllerTest {
                     });
                     assertNull(response.getData());
                     assertNotNull(response.getErrors());
-                    assertEquals(response.getErrors(), "Game tidak ditemukan");
+                    assertEquals("Game tidak ditemukan", response.getErrors() );
 
                 });
 
@@ -162,7 +160,7 @@ public class TransaksiControllerTest {
                    }) ;
                    assertNotNull(response.getData());
                    assertNull(response.getErrors());
-                   assertEquals(response.getData().getEmailPembeli(), "example@gmail.com");
+                   assertEquals("example@gmail.com", response.getData().getEmailPembeli() );
                 });
     }
 
@@ -184,7 +182,7 @@ public class TransaksiControllerTest {
                     }) ;
                     assertNull(response.getData());
                     assertNotNull(response.getErrors());
-                    assertEquals(response.getErrors(), "Keranjang tidak ditemukan");
+                    assertEquals("Keranjang tidak ditemukan", response.getErrors() );
                 });
     }
     @Test
@@ -206,7 +204,7 @@ public class TransaksiControllerTest {
 
                    assertNotNull(response.getData());
                    assertNull(response.getErrors());
-                   assertEquals(response.getData().get(0).getEmailPembeli(), email);
+                   assertEquals( email, response.getData().get(0).getEmailPembeli());
                 });
     }
 }

@@ -1,6 +1,5 @@
 package jagongadpro.penjualanpembelian.dto;
 
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.*;
 import lombok.*;
 

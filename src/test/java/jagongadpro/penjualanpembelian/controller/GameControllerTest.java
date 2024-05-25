@@ -18,10 +18,10 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.MockMvcBuilder.*;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+
 @AutoConfigureMockMvc
 @SpringBootTest
 public class GameControllerTest {
@@ -37,7 +37,7 @@ public class GameControllerTest {
         gameRepository.deleteAll();
     }
     @Test
-    public void testCreateGameSuccess() throws Exception {
+    void testCreateGameSuccess() throws Exception {
         CreateGameRequest request = new CreateGameRequest();
         request.setNama("Game1");
         request.setDeskripsi("deskripsi");
@@ -59,7 +59,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testCreateGameFailed() throws Exception {
+     void testCreateGameFailed() throws Exception {
         CreateGameRequest request = new CreateGameRequest();
         request.setDeskripsi("deskripsi");
         request.setHarga(10000);
@@ -74,7 +74,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testGetAllGame() throws Exception {
+     void testGetAllGame() throws Exception {
         for (int i = 0; i < 5; i++) {
             Game game = new Game.GameBuilder().nama("Game "+ i).stok(10).harga(1000).kategori("action").deskripsi("bagus").build();
             gameRepository.save(game);
@@ -96,7 +96,7 @@ public class GameControllerTest {
     }
 
     @Test
-    public void testFilterGameNotFound() throws Exception {
+     void testFilterGameNotFound() throws Exception {
 
         mockMvc.perform(get("/api/games/get").param("name", "ABC").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -105,13 +105,13 @@ public class GameControllerTest {
 
                     });
                     assertNull(response.getErrors());
-                    assertEquals(response.getData().size(), 0);
+                    assertEquals(0, response.getData().size());
 
                 });
     }
 
     @Test
-    public void testFilterGameSuccess() throws Exception {
+     void testFilterGameSuccess() throws Exception {
         for (int i = 0; i < 10; i++) {
             Game game = new Game.GameBuilder().nama("Game "+ i).stok(10).harga(1000).kategori("action").deskripsi("bagus").build();
             gameRepository.save(game);
@@ -123,7 +123,7 @@ public class GameControllerTest {
 
                     });
                     assertNull(response.getErrors());
-                    assertEquals(response.getData().size(), 10);
+                    assertEquals(10, response.getData().size());
 
                 });
         mockMvc.perform(get("/api/games/get").param("harga", String.valueOf(1000)).accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
@@ -133,7 +133,7 @@ public class GameControllerTest {
 
                     });
                     assertNull(response.getErrors());
-                    assertEquals(response.getData().size(), 10);
+                    assertEquals(10, response.getData().size());
 
                 });
         mockMvc.perform(get("/api/games/get").param("kategori", "act").accept(MediaType.APPLICATION_JSON).contentType(MediaType.APPLICATION_JSON))
@@ -143,13 +143,13 @@ public class GameControllerTest {
 
                     });
                     assertNull(response.getErrors());
-                    assertEquals(response.getData().size(), 10);
+                    assertEquals(10, response.getData().size());
 
                 });
     }
 
     @Test
-    public void getByIdSuccess() throws  Exception{
+     void getByIdSuccess() throws  Exception{
         Game game = new Game.GameBuilder().nama("test").build();
         gameRepository.save(game);
         String id = game.getId();
@@ -158,18 +158,18 @@ public class GameControllerTest {
                     WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
                     assertNotNull(response.getData());
                     assertNull(response.getErrors());
-                    assertEquals(response.getData().getNama(), "test");
+                    assertEquals("test", response.getData().getNama());
                 });
     }
     @Test
-    public void getByIdNotFound() throws  Exception{
+     void getByIdNotFound() throws  Exception{
 
         mockMvc.perform(get("/api/games/abc").contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isNotFound())
                 .andDo(result -> {
                     WebResponse<GameResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
                     assertNull(response.getData());
                     assertNotNull(response.getErrors());
-                    assertEquals(response.getErrors(), "Game tidak ditemukan");
+                    assertEquals("Game tidak ditemukan", response.getErrors() );
                 });
     }
 

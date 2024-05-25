@@ -18,7 +18,7 @@ class ValidationServiceTest {
     void testValidationWorks(){
         request = new CreateGameRequest();
 
-        Throwable exception = assertThrows(ConstraintViolationException.class, () -> {
+        assertThrows(ConstraintViolationException.class, () -> {
             validationService.validate(request);
         });
 

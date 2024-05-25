@@ -71,8 +71,8 @@ public class GameServiceImpl implements GameService{
         };
 
         List<Game> games = gameRepository.findAll(specification);
-        List<GameResponse> response = games.stream().map(this::toGameResponse).toList();
-        return  response;
+        return games.stream().map(this::toGameResponse).toList();
+
     }
 
     @Transactional(readOnly = true)

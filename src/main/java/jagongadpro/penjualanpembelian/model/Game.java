@@ -68,8 +68,7 @@ public class Game {
             return this;
         }
         public Game build() {
-            Game game=  new Game(this);
-            return game;
+            return  new Game(this);
         }
 
 

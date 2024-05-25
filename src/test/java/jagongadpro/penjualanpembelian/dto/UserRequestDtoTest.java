@@ -10,24 +10,24 @@ class UserRequestDtoTest {
     @Test
     void setterGetterEmail(){
         userRequestDto.setEmail("email");
-        assertEquals(userRequestDto.getEmail(), "email");
+        assertEquals("email", userRequestDto.getEmail());
     }
 
     @Test
     void setterGetterUserName(){
         userRequestDto.setUsername("username");
-        assertEquals(userRequestDto.getUsername(), "username");
+        assertEquals("username", userRequestDto.getUsername());
     }
 
     @Test
     void setterGetterSaldo(){
         userRequestDto.setSaldo(70000);
-        assertEquals(userRequestDto.getSaldo(), 70000);
+        assertEquals( 70000, userRequestDto.getSaldo());
     }
     @Test
     void setterGetterStatus(){
         userRequestDto.setStatus("ROLE_PEMBELI");
-        assertEquals(userRequestDto.getStatus(), "ROLE_PEMBELI");
+        assertEquals("ROLE_PEMBELI", userRequestDto.getStatus());
     }
 
     @Test
