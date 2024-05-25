@@ -38,7 +38,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
     @Autowired
     GameService gameService;
 
-    @Value("app.auth")
+    @Value("${app.auth}")
     String auth;
 
     @Transactional

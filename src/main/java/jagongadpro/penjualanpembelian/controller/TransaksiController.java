@@ -36,6 +36,7 @@ public class TransaksiController {
     @Value("${app.cart}")
     String cart;
 
+    @CrossOrigin
     @GetMapping(value = "/display/{email}")
     public WebResponse<ListGameResponse> createProductPost(@PathVariable String email){
         KeranjangDto keranjang = getKeranjangByEmail(email);
@@ -53,7 +54,7 @@ public class TransaksiController {
         ListGameResponse listGameResponse = ListGameResponse.builder().listGames(listGame).totalPrice(keranjang.getTotalPrice()).build();
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
-
+    @CrossOrigin
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<TransaksiResponse> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
@@ -72,7 +73,7 @@ public class TransaksiController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<KeranjangDto> response= restTemplate.exchange(cart+"api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
+        ResponseEntity<KeranjangDto> response= restTemplate.exchange(cart+"/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
