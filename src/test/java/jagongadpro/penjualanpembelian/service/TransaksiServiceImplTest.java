@@ -62,30 +62,21 @@ class TransaksiServiceImplTest {
         UserRequestDto userRequestDto = UserRequestDto.builder().email("example@gmail.com").saldo(100000).build();
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
+
+        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
+        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
+
+        WebResponse<String> responseUpdateBalance = WebResponse.<String>builder().data("Ok").build();
+        CompletableFuture<WebResponse<String>> future1 = CompletableFuture.completedFuture(responseUpdateBalance);
+        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
+
         when(restTemplate.exchange(
-                eq("http://localhost:8080/user/me"),
+                eq("http://34.87.70.230/user/me"),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
                 .thenReturn(ResponseEntity.ok().body(responseUser));
-//        when(restTemplate.exchange(
-//                eq("http://localhost:8081/api/cart/clear/"+email),
-//                eq(HttpMethod.DELETE),
-//                any(),
-//                eq(Void.class)))
-//                .thenReturn(ResponseEntity.ok().build());
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
-//        ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
-        WebResponse<String> responseUpdateBalance = WebResponse.<String>builder().data("Ok").build();
-        CompletableFuture<WebResponse<String>> future1 = CompletableFuture.completedFuture(responseUpdateBalance);
-        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
-//        when(restTemplate.exchange(
-//                eq("http://localhost:8080/user/reduceBalance"),
-//                eq(HttpMethod.PATCH),
-//                any(),
-//                eq(responseTypeBalance)))
-//                 .thenReturn(ResponseEntity.ok().body(responseUpdateBalance));
+
         Game game = new Game.GameBuilder().stok(10).build();
         when(gameRepository.findById("id")).thenReturn(Optional.of(game));
 
@@ -115,7 +106,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://localhost:8080/user/me"),
+                eq("http://34.87.70.230/user/me"),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
@@ -141,7 +132,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://localhost:8080/user/me"),
+                eq("http://34.87.70.230/user/me"),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
@@ -168,7 +159,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://localhost:8080/user/me"),
+                eq("http://34.87.70.230/user/me"),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
