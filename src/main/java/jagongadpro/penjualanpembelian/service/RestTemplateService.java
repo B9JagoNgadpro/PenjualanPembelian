@@ -27,7 +27,7 @@ public class RestTemplateService {
         headers.add("Authorization", token);
 
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Void> deleteKeranjangResponse= restTemplate.exchange("http://localhost:8081/api/cart/clear/"+email, HttpMethod.DELETE,entity, Void.class);
+        ResponseEntity<Void> deleteKeranjangResponse= restTemplate.exchange("http://35.213.132.17/api/cart/clear/"+email, HttpMethod.DELETE,entity, Void.class);
         Void response = deleteKeranjangResponse.getBody();
         return CompletableFuture.completedFuture(response);
     }
@@ -40,7 +40,7 @@ public class RestTemplateService {
         requestBody.put("saldo", user.getSaldo()- keranjang.getTotalPrice());
         HttpEntity<Map<String, Integer>> requestEntity = new HttpEntity<>(requestBody, headers);
         ParameterizedTypeReference<WebResponse<String>> responseTypeBalance = new ParameterizedTypeReference<WebResponse<String>>() {};
-        ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange("http://localhost:8080/user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
+        ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange("http://34.87.70.230/user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
         WebResponse<String> newBalance = updateBalance.getBody();
         return CompletableFuture.completedFuture(newBalance);
     }

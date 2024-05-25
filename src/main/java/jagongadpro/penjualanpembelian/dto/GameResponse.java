@@ -6,7 +6,6 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor
 public class GameResponse {
     private String id;
 

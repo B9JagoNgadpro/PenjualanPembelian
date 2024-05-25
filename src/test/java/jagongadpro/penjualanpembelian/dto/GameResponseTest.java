@@ -5,36 +5,36 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameResponseTest {
-    GameResponse gameResponse = new GameResponse();
+    GameResponse gameResponse = GameResponse.builder().build();
 
     @Test
     void getterSetterId() {
         gameResponse.setId("abc");
-        assertEquals(gameResponse.getId(),"abc");
+        assertEquals("abc", gameResponse.getId());
     }
 
     @Test
     void getterSetterNama() {
         gameResponse.setNama("Game3");
-        assertEquals(gameResponse.getNama(),"Game3");
+        assertEquals("Game3", gameResponse.getNama());
     }
 
     @Test
     void getterSetterDeskripsi() {
         gameResponse.setDeskripsi("baik");
-        assertEquals(gameResponse.getDeskripsi(),"baik");
+        assertEquals("baik", gameResponse.getDeskripsi());
     }
 
     @Test
     void getterSetterHarga() {
         gameResponse.setHarga(10000);
-        assertEquals(gameResponse.getHarga(),10000);
+        assertEquals(10000, gameResponse.getHarga());
     }
 
     @Test
     void getterSetterKategori() {
         gameResponse.setKategori("action");
-        assertEquals(gameResponse.getKategori(),"action");
+        assertEquals("action", gameResponse.getKategori());
     }
 
     @Test
@@ -45,7 +45,7 @@ class GameResponseTest {
     @Test
     void getterSetterStok() {
         gameResponse.setStok(100);
-        assertEquals(gameResponse.getStok(),100);
+        assertEquals(100, gameResponse.getStok());
     }
 
     @Test

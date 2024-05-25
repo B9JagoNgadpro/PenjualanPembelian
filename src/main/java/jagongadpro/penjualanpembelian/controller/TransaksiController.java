@@ -37,10 +37,14 @@ public class TransaksiController {
 
         ArrayList<GameTransaksiResponse> listGame = new ArrayList<>();
         Map<String, Integer> listGames = keranjang.getItems();
-        for (String key : listGames.keySet()) {
-            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, listGames.get(key));
+        for (Map.Entry<String, Integer> entry : listGames.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, value);
             listGame.add(gameTransaksiResponse);
         }
+
         ListGameResponse listGameResponse = ListGameResponse.builder().listGames(listGame).totalPrice(keranjang.getTotalPrice()).build();
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
@@ -63,12 +67,11 @@ public class TransaksiController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<KeranjangDto> response= restTemplate.exchange("http://localhost:8081/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
+        ResponseEntity<KeranjangDto> response= restTemplate.exchange("http://35.213.132.17/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
-        KeranjangDto keranjang = response.getBody();
-        return  keranjang;
+        return  response.getBody();
     }
 
 

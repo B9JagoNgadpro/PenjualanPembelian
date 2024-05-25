@@ -52,28 +52,27 @@ public class GameServiceImpl implements GameService{
         List<Game> games = gameRepository.findAll();
         return games.stream().map(this::toGameResponse).toList();
     }
-
+    
     @Transactional(readOnly = true)
     public List<GameResponse> filter(FilterGameRequest request) {
         Specification<Game> specification = (root, query, builder) -> {
             List<Predicate> predicates = new ArrayList<>();
-            //predicates.add(builder.equal(root.get("user"), user));
             if (Objects.nonNull(request.getNama())) {
-                predicates.add(builder.like(root.get("nama"), "%" + request.getNama() + "%"));
+                predicates.add(builder.like(builder.lower(root.get("nama")), "%" + request.getNama().toLowerCase() + "%"));
             }
             if (Objects.nonNull(request.getHarga())) {
-                predicates.add(builder.equal(root.get("harga"), request.getHarga() ));
+                predicates.add(builder.equal(root.get("harga"), request.getHarga()));
             }
             if (Objects.nonNull(request.getKategori())) {
-                predicates.add(builder.like(root.get("kategori"), "%" + request.getKategori() + "%"));
+                predicates.add(builder.like(builder.lower(root.get("kategori")), "%" + request.getKategori().toLowerCase() + "%"));
             }
 
-            return query.where(predicates.toArray(new Predicate[]{})).getRestriction();
+            return query.where(predicates.toArray(new Predicate[0])).getRestriction();
         };
 
         List<Game> games = gameRepository.findAll(specification);
-        List<GameResponse> response = games.stream().map(this::toGameResponse).toList();
-        return  response;
+        return games.stream().map(this::toGameResponse).toList();
+
     }
 
     @Transactional(readOnly = true)

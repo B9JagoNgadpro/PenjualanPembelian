@@ -15,27 +15,27 @@ class TransaksiResponseTest {
 
     @Test
     void getGames(){
-        assertEquals(transaksiResponse.getGames().size(), 0);
+        assertEquals(0, transaksiResponse.getGames().size());
     }
 
 
     @Test
     void getId(){
-        assertEquals(transaksiResponse.getId(), "abc");
+        assertEquals("abc", transaksiResponse.getId());
     }
 
     @Test
     void getTanggal(){
-        assertEquals(transaksiResponse.getTanggal(), tanggal);
+        assertEquals(tanggal, transaksiResponse.getTanggal());
     }
 
     @Test
     void getEmailPembeli(){
-        assertEquals(transaksiResponse.getEmailPembeli(), "abc@gmail.com");
+        assertEquals("abc@gmail.com", transaksiResponse.getEmailPembeli());
     }
     @Test
     void getTotalPrice(){
-        assertEquals(transaksiResponse.getTotalPrice(), 70000);
+        assertEquals(70000, transaksiResponse.getTotalPrice());
     }
 
     @Test

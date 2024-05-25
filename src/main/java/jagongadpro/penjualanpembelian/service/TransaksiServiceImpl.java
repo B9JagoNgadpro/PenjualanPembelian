@@ -43,7 +43,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
-        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange("http://localhost:8080/user/me", HttpMethod.GET, entity, responseType);
+        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange("http://34.87.70.230/user/me", HttpMethod.GET, entity, responseType);
         UserRequestDto user = userResponse.getBody().getData();
 
         //cek saldo kalo kureng throw except
@@ -53,15 +53,22 @@ public class TransaksiServiceImpl implements  TransaksiService{
 
         //kurangin stok semua game
         Map<String, Integer> listGames = keranjang.getItems();
-        for (String key : listGames.keySet()) {
-            Game game = gameRepository.findById(key).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND, "Game tidak ditemukan"));
+        for (Map.Entry<String, Integer> entry : listGames.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            Game game = gameRepository.findById(key).orElseThrow(() ->
+                    new ResponseStatusException(HttpStatus.NOT_FOUND, "Game tidak ditemukan"));
+
             Integer stockSekarang = game.getStok();
-            if (stockSekarang- listGames.get(key)<0){
+            if (stockSekarang - value < 0) {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Stock Game Kurang");
             }
-            game.setStok(stockSekarang- listGames.get(key));
+
+            game.setStok(stockSekarang - value);
             gameRepository.save(game);
         }
+
 
         CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
         CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
@@ -93,10 +100,14 @@ public class TransaksiServiceImpl implements  TransaksiService{
     public RiwayatTransaksiResponse toRiwayatTransaksiResponse(Transaksi transaksi){
         Map<String, Integer> listGames= transaksi.getGames();
         ArrayList<GameTransaksiResponse> listGameTransaksiResponse = new ArrayList<>();
-        for (String key : listGames.keySet()) {
-            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, listGames.get(key));
+        for (Map.Entry<String, Integer> entry : listGames.entrySet()) {
+            String key = entry.getKey();
+            Integer value = entry.getValue();
+
+            GameTransaksiResponse gameTransaksiResponse = gameService.countGamePrice(key, value);
             listGameTransaksiResponse.add(gameTransaksiResponse);
         }
+
         return RiwayatTransaksiResponse.builder()
                 .tanggal(transaksi.getTanggal())
                 .listGames(listGameTransaksiResponse)

@@ -13,7 +13,7 @@ class RiwayatTransaksiResponseTest {
 
     @Test
     void getterId(){
-        assertEquals(riwayatTransaksiResponse.getId(), "id");
+        assertEquals("id", riwayatTransaksiResponse.getId());
     }
 
     @Test
@@ -23,16 +23,16 @@ class RiwayatTransaksiResponseTest {
 
     @Test
     void getterTanggal(){
-       assertEquals(riwayatTransaksiResponse.getTanggal(), tanggal);
+       assertEquals(tanggal,riwayatTransaksiResponse.getTanggal());
     }
 
     @Test
     void getterEmailPembeli(){
-        assertEquals(riwayatTransaksiResponse.getEmailPembeli(), "email");
+        assertEquals("email", riwayatTransaksiResponse.getEmailPembeli());
     }
     @Test
     void getterTotalPrice(){
-        assertEquals(riwayatTransaksiResponse.getTotalPrice(), 10000);
+        assertEquals(10000, riwayatTransaksiResponse.getTotalPrice());
     }
 
     @Test
