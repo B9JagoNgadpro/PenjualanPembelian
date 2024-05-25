@@ -8,6 +8,7 @@ import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,11 @@ public class TransaksiController {
 
     @Autowired
     TransaksiService transaksiService;
+
+
+    @Value("${app.cart}")
+    String cart;
+
 
     @GetMapping(value = "/display/{email}")
     public WebResponse<ListGameResponse> createProductPost(@PathVariable String email){
@@ -67,7 +73,7 @@ public class TransaksiController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "token");
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<KeranjangDto> response= restTemplate.exchange("http://35.213.132.17/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
+        ResponseEntity<KeranjangDto> response= restTemplate.exchange(cart+"/api/cart/view/"+email, HttpMethod.GET,entity ,KeranjangDto.class);
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }

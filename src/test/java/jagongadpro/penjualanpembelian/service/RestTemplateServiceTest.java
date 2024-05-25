@@ -4,6 +4,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -21,13 +22,18 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.concurrent.CompletableFuture;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class RestTemplateServiceTest {
+
+    @Value("${app.cart}")
+    String cart;
+
+    @Value("${app.auth}")
+    String auth;
 
     @Mock
     private RestTemplate restTemplate;
@@ -37,23 +43,41 @@ class RestTemplateServiceTest {
 
 
     @Test
-    void testDeleteKeranjang() {
+    void testDeleteKeranjang() throws Exception {
+        // Define the URL and expected response entity
         String token = "Bearer token";
         String email = "test@example.com";
+        String url = cart+"/api/cart/clear/" + email;
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
-
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
-        ResponseEntity<Void> responseEntity = mock(ResponseEntity.class);
-        when(responseEntity.getBody()).thenReturn(null);
-        when(restTemplate.exchange(eq("http://35.213.132.17/api/cart/clear/" + email), eq(HttpMethod.DELETE), eq(entity), eq(Void.class)))
-                .thenReturn(responseEntity);
+        ResponseEntity<Void> responseEntity = ResponseEntity.noContent().build();
 
-        CompletableFuture<Void> result = restTemplateService.deleteKeranjang(token, email);
+        // Stubbing restTemplate.exchange with exact arguments
+        when(restTemplate.exchange(
+                eq(url),
+                eq(HttpMethod.DELETE),
+                eq(entity),
+                eq(Void.class)
+        )).thenReturn(responseEntity);
 
-        assertNotNull(result);
-        verify(restTemplate, times(1)).exchange(anyString(), eq(HttpMethod.DELETE), any(HttpEntity.class), eq(Void.class));
+        // Call the method under test
+        CompletableFuture<Void> futureResponse = restTemplateService.deleteKeranjang(token, email);
+
+        // Wait for the future to complete
+        Void response = futureResponse.get();
+
+        // Assertions
+        assertNull(response);
+
+        // Verify that the exchange method was called with the correct arguments
+        verify(restTemplate).exchange(
+                eq(url),
+                eq(HttpMethod.DELETE),
+                eq(entity),
+                eq(Void.class)
+        );
     }
 
     @Test
@@ -71,7 +95,7 @@ class RestTemplateServiceTest {
         ResponseEntity<WebResponse<String>> responseEntity = mock(ResponseEntity.class);
         when(responseEntity.getBody()).thenReturn(webResponse);
 
-        when(restTemplate.exchange(eq("http://34.87.70.230/user/reduceBalance"), eq(HttpMethod.PATCH), any(HttpEntity.class), any(ParameterizedTypeReference.class)))
+        when(restTemplate.exchange(eq(auth+"/user/reduceBalance"), eq(HttpMethod.PATCH), any(HttpEntity.class), any(ParameterizedTypeReference.class)))
                 .thenReturn(responseEntity);
 
         CompletableFuture<WebResponse<String>> result = restTemplateService.reduceSaldo(token, user, keranjang);

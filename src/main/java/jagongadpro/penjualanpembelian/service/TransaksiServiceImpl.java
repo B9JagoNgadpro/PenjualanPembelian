@@ -7,6 +7,7 @@ import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jagongadpro.penjualanpembelian.repository.TransaksiRepository;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
@@ -36,6 +37,10 @@ public class TransaksiServiceImpl implements  TransaksiService{
 
     @Autowired
     GameService gameService;
+
+    @Value("${app.auth}")
+    String auth;
+
     @Transactional
     public TransaksiResponse createTransaksi(KeranjangDto keranjang, String email, String token){
         //tembah auth buat dptin saldonya
@@ -43,7 +48,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
         headers.add("Authorization", token);
         HttpEntity<String> entity = new HttpEntity<>(null, headers);
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
-        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange("http://34.87.70.230/user/me", HttpMethod.GET, entity, responseType);
+        ResponseEntity<WebResponse<UserRequestDto>> userResponse = restTemplate.exchange(auth+"user/me", HttpMethod.GET, entity, responseType);
         UserRequestDto user = userResponse.getBody().getData();
 
         //cek saldo kalo kureng throw except

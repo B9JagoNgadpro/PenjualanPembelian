@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.VoidAnswer1;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -46,6 +47,9 @@ class TransaksiServiceImplTest {
     @Mock
     RestTemplateService restTemplateService;
 
+    @Value("${app.auth}")
+    String auth;
+
     @Test
     void createTransaksiSuccess(){
         Map<String,Integer> items = new HashMap<>();
@@ -53,6 +57,7 @@ class TransaksiServiceImplTest {
 
         String email = "example@gmail.com";
         String token = "token";
+
 
         KeranjangDto keranjangDto = new KeranjangDto();
         keranjangDto.setItems(items);
@@ -64,18 +69,21 @@ class TransaksiServiceImplTest {
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
 
         CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
+
 
         WebResponse<String> responseUpdateBalance = WebResponse.<String>builder().data("Ok").build();
         CompletableFuture<WebResponse<String>> future1 = CompletableFuture.completedFuture(responseUpdateBalance);
-        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
 
-        when(restTemplate.exchange(
-                eq("http://34.87.70.230/user/me"),
+        lenient().when(restTemplate.exchange(
+                anyString(),
                 eq(HttpMethod.GET),
                 any(),
-                eq(responseType)))
+                eq(new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {})))
                 .thenReturn(ResponseEntity.ok().body(responseUser));
+        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
+        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
+
+
 
         Game game = new Game.GameBuilder().stok(10).build();
         when(gameRepository.findById("id")).thenReturn(Optional.of(game));
@@ -106,7 +114,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://34.87.70.230/user/me"),
+                anyString(),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
@@ -132,7 +140,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://34.87.70.230/user/me"),
+                anyString(),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
@@ -159,7 +167,7 @@ class TransaksiServiceImplTest {
         WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
         ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
         when(restTemplate.exchange(
-                eq("http://34.87.70.230/user/me"),
+                anyString(),
                 eq(HttpMethod.GET),
                 any(),
                 eq(responseType)))
