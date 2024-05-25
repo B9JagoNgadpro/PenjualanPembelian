@@ -36,7 +36,7 @@ public class TransaksiController {
     @Value("${app.cart}")
     String cart;
 
-    @CrossOrigin
+
     @GetMapping(value = "/display/{email}")
     public WebResponse<ListGameResponse> createProductPost(@PathVariable String email){
         KeranjangDto keranjang = getKeranjangByEmail(email);
@@ -54,7 +54,7 @@ public class TransaksiController {
         ListGameResponse listGameResponse = ListGameResponse.builder().listGames(listGame).totalPrice(keranjang.getTotalPrice()).build();
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
-    @CrossOrigin
+
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<TransaksiResponse> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
