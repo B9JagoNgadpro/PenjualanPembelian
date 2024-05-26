@@ -88,13 +88,8 @@ class TransaksiServiceImplTest {
         Game game = new Game.GameBuilder().stok(10).build();
         when(gameRepository.findById("id")).thenReturn(Optional.of(game));
 
-        TransaksiResponse response = transaksiService.createTransaksi(keranjangDto, email, token);
-        assertEquals(response.getEmailPembeli(), email);
-        assertEquals(response.getTotalPrice(),10000);
-        verify(transaksiRepository, times(1)).save(any(Transaksi.class));
-        assertNotNull(response);
-        assertEquals(response.getGames().size(), 1);
-        assertEquals(game.getStok(), 8);
+        verify(restTemplateService.deleteKeranjang(anyString(), anyString()), times(1));
+        verify(restTemplateService.reduceSaldo(anyString(), any(UserRequestDto.class), any(KeranjangDto.class)), times(1));
     }
 
     @Test

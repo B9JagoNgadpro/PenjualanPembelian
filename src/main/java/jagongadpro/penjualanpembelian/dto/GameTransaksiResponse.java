@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class GameTransaksiResponse {
+public class GameDisplayResponse {
     private String nama;
     private Integer quantity;
     private Integer hargaSatuan;
