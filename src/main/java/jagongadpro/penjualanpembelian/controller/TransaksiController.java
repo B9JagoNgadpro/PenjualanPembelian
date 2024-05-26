@@ -55,6 +55,7 @@ public class TransaksiController {
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
         KeranjangDto keranjang = getKeranjangByEmail(email);
+        transaksiService.createTransaksi(keranjang,email,token);
         return WebResponse.<String>builder().data("Ok").build();
     }
 
