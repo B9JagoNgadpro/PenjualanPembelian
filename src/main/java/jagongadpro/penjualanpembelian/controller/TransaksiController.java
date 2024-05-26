@@ -1,6 +1,7 @@
 package jagongadpro.penjualanpembelian.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jagongadpro.penjualanpembelian.config.CartPublisher;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
@@ -19,6 +20,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/transaksi")
 public class TransaksiController {
+
+    @Autowired
+    private CartPublisher cartPublisher;
+
     @Autowired
     GameService gameService;
 
@@ -74,6 +79,8 @@ public class TransaksiController {
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
+        cartPublisher.sendViewCartRequest(email);
+        cartPublisher.getCartResponse();
         return  response.getBody();
     }
 
