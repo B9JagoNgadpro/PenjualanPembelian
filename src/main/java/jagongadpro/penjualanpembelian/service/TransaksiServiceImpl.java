@@ -93,7 +93,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
         CompletableFuture<Void> createTransaksi = restTemplateService.createTransaksi(createTransaksiResponse);
         CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
         CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
-        CompletableFuture.allOf(deleteKeranjang, reduceSaldo, createTransaksi).join();
+        CompletableFuture.allOf(deleteKeranjang, createTransaksi, reduceSaldo).join();
     }
 
 
