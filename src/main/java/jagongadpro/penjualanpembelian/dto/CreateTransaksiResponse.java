@@ -17,7 +17,7 @@ public class CreateTransaksiResponse {
 
     private List<GameForTransaksi> games;
 
-    private double total_harga;
+    private  Integer total_harga;
 
     private Date tanggal_pembayaran;
 

@@ -1,5 +1,6 @@
 package jagongadpro.penjualanpembelian.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
@@ -51,9 +52,10 @@ public class TransaksiController {
     }
 
 
+    @CrossOrigin
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
+    public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token) {
         KeranjangDto keranjang = getKeranjangByEmail(email);
         transaksiService.createTransaksi(keranjang,email,token);
         return WebResponse.<String>builder().data("Ok").build();

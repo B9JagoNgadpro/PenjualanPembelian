@@ -1,5 +1,7 @@
 package jagongadpro.penjualanpembelian.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.model.Game;
 import jagongadpro.penjualanpembelian.model.Transaksi;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -33,13 +36,16 @@ public class TransaksiServiceImpl implements  TransaksiService{
     GameRepository gameRepository;
 
     @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
     GameService gameService;
 
     @Value("${app.auth}")
     String auth;
 
     @Transactional
-    public void createTransaksi(KeranjangDto keranjang, String email, String token){
+    public void createTransaksi(KeranjangDto keranjang, String email, String token) {
         //tembah auth buat dptin saldonya
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
@@ -88,12 +94,10 @@ public class TransaksiServiceImpl implements  TransaksiService{
                 .tanggal_pembayaran(new Date())
                 .pembeli_id(keranjang.getEmail())
                 .build();
-
-        //tembak punya abeel
-        CompletableFuture<Void> createTransaksi = restTemplateService.createTransaksi(createTransaksiResponse);
+        CompletableFuture<HashMap<String, String>> createTransaksi = restTemplateService.createTransaksi(createTransaksiResponse);
         CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
         CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
-        CompletableFuture.allOf(deleteKeranjang, createTransaksi, reduceSaldo).join();
+        CompletableFuture.allOf(deleteKeranjang,createTransaksi ,reduceSaldo).join();
     }
 
 

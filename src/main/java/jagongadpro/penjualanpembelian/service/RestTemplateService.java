@@ -56,7 +56,7 @@ public class RestTemplateService {
     }
 
     @Async
-    public CompletableFuture<Void> createTransaksi(CreateTransaksiResponse createTransaksiResponse){
+    public CompletableFuture<HashMap<String,String> >createTransaksi(CreateTransaksiResponse createTransaksiResponse){
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<CreateTransaksiResponse> entity = new HttpEntity<>(createTransaksiResponse, headers);
         ResponseEntity<HashMap<String, String>> response = restTemplate.exchange(
