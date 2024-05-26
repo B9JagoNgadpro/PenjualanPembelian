@@ -52,7 +52,6 @@ public class TransaksiController {
     }
 
 
-    @CrossOrigin
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
     public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token) {
