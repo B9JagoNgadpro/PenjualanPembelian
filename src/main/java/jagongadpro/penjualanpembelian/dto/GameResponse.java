@@ -20,4 +20,6 @@ public class GameResponse {
 
 
     private Integer stok;
+
+    private  String idPenjual;
 }

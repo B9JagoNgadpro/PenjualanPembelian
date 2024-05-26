@@ -1,16 +1,11 @@
 package jagongadpro.penjualanpembelian.controller;
 
 import jagongadpro.penjualanpembelian.dto.*;
-import jagongadpro.penjualanpembelian.model.Game;
-import jagongadpro.penjualanpembelian.model.Transaksi;
-import jagongadpro.penjualanpembelian.repository.GameRepository;
 import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
@@ -54,6 +49,7 @@ public class TransaksiController {
         ListGameResponse listGameResponse = ListGameResponse.builder().listGames(listGame).totalPrice(keranjang.getTotalPrice()).build();
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
+
 
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)

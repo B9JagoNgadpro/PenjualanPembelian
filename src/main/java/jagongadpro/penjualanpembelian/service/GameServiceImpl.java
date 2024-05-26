@@ -31,7 +31,7 @@ public class GameServiceImpl implements GameService{
     @Transactional
     public GameResponse create(CreateGameRequest request) {
         validationService.validate(request);
-        Game game = new Game.GameBuilder().nama(request.getNama()).stok(request.getStok()).kategori(request.getKategori()).harga(request.getHarga()).deskripsi(request.getDeskripsi()).build();
+        Game game = new Game.GameBuilder().nama(request.getNama()).stok(request.getStok()).kategori(request.getKategori()).harga(request.getHarga()).deskripsi(request.getDeskripsi()).idPenjual(request.getIdPenjual()).build();
         gameRepository.save(game);
         return  toGameResponse(game);
 
@@ -45,6 +45,7 @@ public class GameServiceImpl implements GameService{
                 .harga(game.getHarga())
                 .kategori(game.getKategori())
                 .stok(game.getStok())
+                .idPenjual(game.getIdPenjual())
                 .build();
     }
     @Transactional(readOnly = true)
