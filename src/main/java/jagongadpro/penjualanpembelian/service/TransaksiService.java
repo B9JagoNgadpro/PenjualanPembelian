@@ -8,6 +8,6 @@ import java.util.List;
 
 @Service
 public interface TransaksiService {
-    public TransaksiResponse createTransaksi(KeranjangDto keranjang, String email, String token);
+    public void createTransaksi(KeranjangDto keranjang, String email, String token);
     public List<RiwayatTransaksiResponse>  getTransaksiByEmail(String email);
 }

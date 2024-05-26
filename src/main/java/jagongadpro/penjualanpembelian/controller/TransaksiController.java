@@ -53,10 +53,9 @@ public class TransaksiController {
 
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<TransaksiResponse> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
+    public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
         KeranjangDto keranjang = getKeranjangByEmail(email);
-        TransaksiResponse transaksi= transaksiService.createTransaksi(keranjang, email, token);
-        return WebResponse.<TransaksiResponse>builder().data(transaksi).build();
+        return WebResponse.<String>builder().data("Ok").build();
     }
 
     @GetMapping("/{email}")
