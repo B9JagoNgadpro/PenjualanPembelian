@@ -24,4 +24,6 @@ public class CreateGameRequest {
     @NotNull
     Integer stok;
 
+    String idPenjual;
+
 }

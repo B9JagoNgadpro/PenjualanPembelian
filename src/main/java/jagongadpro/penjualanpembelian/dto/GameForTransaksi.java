@@ -1,12 +1,15 @@
 package jagongadpro.penjualanpembelian.dto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class GameResponse {
+public class GameForTransaksi {
     private String id;
 
     private String nama;
@@ -18,8 +21,5 @@ public class GameResponse {
 
     private String kategori;
 
-
-    private Integer stok;
-
-    private  String idPenjual;
+    private  String penjual_id;
 }

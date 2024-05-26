@@ -26,12 +26,15 @@ public class Game {
     @Setter
     private Integer stok;
 
+    private String idPenjual;
+
     public Game(GameBuilder builder){
         this.nama = builder.nama;
         this.deskripsi = builder.deskripsi;
         this.harga = builder.harga;
         this.kategori = builder.kategori;
         this.stok = builder.stok;
+        this.idPenjual = builder.idPenjual;
     }
     public static class GameBuilder{
         private String nama;
@@ -45,6 +48,8 @@ public class Game {
 
 
         private Integer stok;
+
+        private String idPenjual;
 
         public GameBuilder nama(String nama){
             this.nama = nama;
@@ -65,6 +70,11 @@ public class Game {
         }
         public GameBuilder harga(Integer harga){
             this.harga = harga;
+            return this;
+        }
+
+        public GameBuilder idPenjual (String id){
+            this.idPenjual = id;
             return this;
         }
         public Game build() {

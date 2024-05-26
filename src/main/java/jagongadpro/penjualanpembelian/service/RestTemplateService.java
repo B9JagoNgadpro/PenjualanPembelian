@@ -1,5 +1,6 @@
 package jagongadpro.penjualanpembelian.service;
 
+import jagongadpro.penjualanpembelian.dto.CreateTransaksiResponse;
 import jagongadpro.penjualanpembelian.dto.KeranjangDto;
 import jagongadpro.penjualanpembelian.dto.UserRequestDto;
 import jagongadpro.penjualanpembelian.dto.WebResponse;
@@ -25,6 +26,9 @@ public class RestTemplateService {
 
     @Value("${app.auth}")
     String auth;
+
+    @Value("${app.riwayat}")
+    String riwayat;
     @Autowired
     RestTemplate restTemplate;
     @Async
@@ -49,5 +53,18 @@ public class RestTemplateService {
         ResponseEntity<WebResponse<String>> updateBalance= restTemplate.exchange(auth+"/user/reduceBalance", HttpMethod.PATCH,requestEntity,responseTypeBalance );
         WebResponse<String> newBalance = updateBalance.getBody();
         return CompletableFuture.completedFuture(newBalance);
+    }
+
+    @Async
+    public CompletableFuture<Void> createTransaksi(CreateTransaksiResponse createTransaksiResponse){
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<CreateTransaksiResponse> entity = new HttpEntity<>(createTransaksiResponse, headers);
+        ResponseEntity<HashMap<String, String>> response = restTemplate.exchange(
+                riwayat+"/create",
+                HttpMethod.POST,
+                entity,
+                new ParameterizedTypeReference<HashMap<String, String>>() {}
+        );
+        return CompletableFuture.completedFuture(null);
     }
 }
