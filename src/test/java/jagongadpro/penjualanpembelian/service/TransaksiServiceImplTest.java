@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
@@ -51,45 +52,52 @@ class TransaksiServiceImplTest {
     String auth;
 
     @Test
-    void createTransaksiSuccess(){
-        Map<String,Integer> items = new HashMap<>();
-        items.put("id", 2);
+    public void testCreateTransaksiSuccess() {
+        // Mocking RestTemplate response for user balance
+        UserRequestDto userRequestDto = UserRequestDto.builder().build();
+        userRequestDto.setSaldo(1000);
+        WebResponse<UserRequestDto> webResponse = new WebResponse<>();
+        webResponse.setData(userRequestDto);
+        ResponseEntity<WebResponse<UserRequestDto>> userResponseEntity = ResponseEntity.ok(webResponse);
 
-        String email = "example@gmail.com";
-        String token = "token";
-
-
-        KeranjangDto keranjangDto = new KeranjangDto();
-        keranjangDto.setItems(items);
-        keranjangDto.setEmail(email);
-        keranjangDto.setTotalPrice(10000);
-
-        UserRequestDto userRequestDto = UserRequestDto.builder().email("example@gmail.com").saldo(100000).build();
-        WebResponse<UserRequestDto> responseUser = WebResponse.<UserRequestDto>builder().data(userRequestDto).build();
-        ParameterizedTypeReference<WebResponse<UserRequestDto>> responseType = new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {};
-
-        CompletableFuture<Void> future = CompletableFuture.completedFuture(null);
-
-
-        WebResponse<String> responseUpdateBalance = WebResponse.<String>builder().data("Ok").build();
-        CompletableFuture<WebResponse<String>> future1 = CompletableFuture.completedFuture(responseUpdateBalance);
-
-        lenient().when(restTemplate.exchange(
+        when(restTemplate.exchange(
                 anyString(),
                 eq(HttpMethod.GET),
-                any(),
-                eq(new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {})))
-                .thenReturn(ResponseEntity.ok().body(responseUser));
-        when(restTemplateService.deleteKeranjang(eq(token),eq(email))).thenReturn(future);
-        when(restTemplateService.reduceSaldo(eq(token),eq(userRequestDto),eq(keranjangDto))).thenReturn(future1);
+                any(HttpEntity.class),
+                eq(new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {})
+        )).thenReturn(userResponseEntity);
 
+        // Mocking GameRepository responses
 
+        // Mocking RestTemplateService async calls
+        when(restTemplateService.createTransaksi(any(CreateTransaksiResponse.class)))
+                .thenReturn(CompletableFuture.completedFuture(null));
+        when(restTemplateService.deleteKeranjang(anyString(), anyString()))
+                .thenReturn(CompletableFuture.completedFuture(null));
+        when(restTemplateService.reduceSaldo(anyString(), any(UserRequestDto.class), any(KeranjangDto.class)))
+                .thenReturn(CompletableFuture.completedFuture(new WebResponse<>()));
 
-        Game game = new Game.GameBuilder().stok(10).build();
-        when(gameRepository.findById("id")).thenReturn(Optional.of(game));
+        // Create a sample KeranjangDto object
+        KeranjangDto keranjangDto = new KeranjangDto();
+        keranjangDto.setEmail("user@example.com");
+        keranjangDto.setTotalPrice(500);
+        Map<String, Integer> items = new HashMap<>();
+        keranjangDto.setItems(items);
 
-        verify(restTemplateService.deleteKeranjang(anyString(), anyString()), times(1));
-        verify(restTemplateService.reduceSaldo(anyString(), any(UserRequestDto.class), any(KeranjangDto.class)), times(1));
+        // Call the method
+        transaksiService.createTransaksi(keranjangDto, "user@example.com", "Bearer token");
+
+        // Verify interactions
+        verify(restTemplate).exchange(
+                anyString(),
+                eq(HttpMethod.GET),
+                any(HttpEntity.class),
+                eq(new ParameterizedTypeReference<WebResponse<UserRequestDto>>() {})
+        );
+
+        verify(restTemplateService).createTransaksi(any(CreateTransaksiResponse.class));
+        verify(restTemplateService).deleteKeranjang(anyString(), anyString());
+        verify(restTemplateService).reduceSaldo(anyString(), any(UserRequestDto.class), any(KeranjangDto.class));
     }
 
     @Test
