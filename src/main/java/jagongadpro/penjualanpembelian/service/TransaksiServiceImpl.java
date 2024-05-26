@@ -17,10 +17,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 @Service
@@ -42,7 +39,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
     String auth;
 
     @Transactional
-    public TransaksiResponse createTransaksi(KeranjangDto keranjang, String email, String token){
+    public void createTransaksi(KeranjangDto keranjang, String email, String token){
         //tembah auth buat dptin saldonya
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", token);
@@ -56,6 +53,7 @@ public class TransaksiServiceImpl implements  TransaksiService{
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Saldo anda tidak cukup");
         }
 
+        List<GameForTransaksi> games = new ArrayList<>();
         //kurangin stok semua game
         Map<String, Integer> listGames = keranjang.getItems();
         for (Map.Entry<String, Integer> entry : listGames.entrySet()) {
@@ -72,26 +70,30 @@ public class TransaksiServiceImpl implements  TransaksiService{
 
             game.setStok(stockSekarang - value);
             gameRepository.save(game);
+            GameForTransaksi gameForTransaksi = GameForTransaksi.builder()
+                                                .nama(game.getNama())
+                                                .id(game.getId())
+                                                .deskripsi(game.getDeskripsi())
+                                                .harga(game.getHarga())
+                                                .kategori(game.getKategori())
+                                                .penjual_id(game.getIdPenjual()).build();
+            games.add(gameForTransaksi);
+
         }
-
-
-        CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
-        CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
-        CompletableFuture.allOf(deleteKeranjang, reduceSaldo).join();
-
-        //bikin transaksi
-
-        Transaksi transaksi = Transaksi.builder().emailPembeli(keranjang.getEmail()).games(keranjang.getItems()).emailPembeli(email).totalPrice(keranjang.getTotalPrice()).build();
-        transaksiRepository.save(transaksi);
-
-        return TransaksiResponse.builder()
-                .id(transaksi.getId())
-                .emailPembeli(transaksi.getEmailPembeli())
-                .games(transaksi.getGames())
-                .tanggal(transaksi.getTanggal())
-                .totalPrice(transaksi.getTotalPrice())
+        String id =  UUID.randomUUID().toString();
+        CreateTransaksiResponse createTransaksiResponse = CreateTransaksiResponse.builder()
+                .id(id)
+                .games(games)
+                .total_harga(keranjang.getTotalPrice())
+                .tanggal_pembayaran(new Date())
+                .pembeli_id(keranjang.getEmail())
                 .build();
 
+        //tembak punya abeel
+        CompletableFuture<Void> createTransaksi = restTemplateService.createTransaksi(createTransaksiResponse);
+        CompletableFuture<Void> deleteKeranjang = restTemplateService.deleteKeranjang(token,email);
+        CompletableFuture<WebResponse<String>> reduceSaldo = restTemplateService.reduceSaldo(token,user,keranjang);
+        CompletableFuture.allOf(deleteKeranjang, reduceSaldo, createTransaksi).join();
     }
 
 

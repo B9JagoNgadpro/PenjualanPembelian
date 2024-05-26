@@ -153,14 +153,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 any(),
                 eq(KeranjangDto.class)))
                 .thenReturn(ResponseEntity.ok(keranjangResponse));
-        when(transaksiService.createTransaksi(keranjangResponse, "example@gmail.com", token)).thenReturn(TransaksiResponse.builder().games(keranjangResponse.getItems()).emailPembeli(email).totalPrice(keranjangResponse.getTotalPrice()).build());
         mockMvc.perform(post("/api/transaksi/"+email).header("Authorization",token).contentType(MediaType.APPLICATION_JSON)).andExpectAll(status().isCreated())
                 .andDo(result -> {
-                   WebResponse<TransaksiResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<TransaksiResponse>>() {
+                   WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<WebResponse<String>>() {
                    }) ;
                    assertNotNull(response.getData());
                    assertNull(response.getErrors());
-                   assertEquals("example@gmail.com", response.getData().getEmailPembeli() );
+                   assertEquals("Ok", response.getData());
                 });
     }
 

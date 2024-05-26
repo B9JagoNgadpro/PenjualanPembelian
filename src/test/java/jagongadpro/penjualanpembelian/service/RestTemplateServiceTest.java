@@ -1,5 +1,6 @@
 package jagongadpro.penjualanpembelian.service;
 
+import jagongadpro.penjualanpembelian.dto.CreateTransaksiResponse;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 
+import java.util.HashMap;
 import java.util.concurrent.CompletableFuture;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +36,9 @@ class RestTemplateServiceTest {
 
     @Value("${app.auth}")
     String auth;
+
+    @Value("${app.riwayat}")
+    String riwayat;
 
     @Mock
     private RestTemplate restTemplate;
@@ -103,5 +108,31 @@ class RestTemplateServiceTest {
         assertNotNull(result);
         assertEquals("Success", result.join().getData());
         verify(restTemplate, times(1)).exchange(anyString(), eq(HttpMethod.PATCH), any(HttpEntity.class), any(ParameterizedTypeReference.class));
+    }
+
+    @Test
+    public void testCreateTransaksi() throws Exception {
+        // Mocking RestTemplate response
+        HashMap<String, String> mockResponse = new HashMap<>();
+        mockResponse.put("status", "success");
+        ResponseEntity<HashMap<String, String>> responseEntity = ResponseEntity.ok(mockResponse);
+
+        // Mock the exchange method
+        when(restTemplate.exchange(
+                eq(riwayat+"/create"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(new ParameterizedTypeReference<HashMap<String, String>>() {})
+        )).thenReturn(responseEntity);
+
+        // Create a sample CreateTransaksiResponse object
+        CreateTransaksiResponse createTransaksiResponse = CreateTransaksiResponse.builder().build();
+        // Set properties on createTransaksiResponse as needed
+
+        // Call the method
+        CompletableFuture<Void> future = restTemplateService.createTransaksi(createTransaksiResponse);
+
+        // Verify the result
+        assertTrue(future.isDone());
     }
 }
