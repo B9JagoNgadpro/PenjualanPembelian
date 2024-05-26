@@ -130,7 +130,7 @@ class RestTemplateServiceTest {
         // Set properties on createTransaksiResponse as needed
 
         // Call the method
-        CompletableFuture<Void> future = restTemplateService.createTransaksi(createTransaksiResponse);
+        CompletableFuture<HashMap<String,String>> future = restTemplateService.createTransaksi(createTransaksiResponse);
 
         // Verify the result
         assertTrue(future.isDone());

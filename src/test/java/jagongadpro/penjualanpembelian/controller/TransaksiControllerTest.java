@@ -1,6 +1,7 @@
 package jagongadpro.penjualanpembelian.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jagongadpro.penjualanpembelian.config.CartPublisher;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
@@ -48,6 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
     @MockBean
     TransaksiService transaksiService;
+
+    @MockBean
+    CartPublisher cartPublisher;
 
     @Test
      void GetTransaksi() throws Exception {

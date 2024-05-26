@@ -9,8 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CreateTransaksiResponseTest {
 
-    Date tanggal = new Date();
-    CreateTransaksiResponse createTransaksiResponse = CreateTransaksiResponse.builder().id("id").tanggal_pembayaran(tanggal).total_harga(10000).pembeli_id("email").games(new ArrayList<>()).build();
+
+    CreateTransaksiResponse createTransaksiResponse = CreateTransaksiResponse.builder().id("id").tanggal_pembayaran("tanggal").total_harga(10000).pembeli_id("email").games(new ArrayList<>()).build();
 
     @Test
     void getterId(){
@@ -24,7 +24,7 @@ class CreateTransaksiResponseTest {
 
     @Test
     void getterTanggal(){
-        assertEquals(tanggal,createTransaksiResponse.getTanggal_pembayaran());
+        assertEquals("tanggal",createTransaksiResponse.getTanggal_pembayaran());
     }
 
     @Test

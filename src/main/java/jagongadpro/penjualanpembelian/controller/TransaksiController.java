@@ -1,5 +1,7 @@
 package jagongadpro.penjualanpembelian.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import jagongadpro.penjualanpembelian.config.CartPublisher;
 import jagongadpro.penjualanpembelian.dto.*;
 import jagongadpro.penjualanpembelian.service.GameService;
 import jagongadpro.penjualanpembelian.service.TransaksiService;
@@ -18,6 +20,10 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/transaksi")
 public class TransaksiController {
+
+    @Autowired
+    private CartPublisher cartPublisher;
+
     @Autowired
     GameService gameService;
 
@@ -30,7 +36,6 @@ public class TransaksiController {
 
     @Value("${app.cart}")
     String cart;
-
 
     @GetMapping(value = "/display/{email}")
     public WebResponse<ListGameResponse> createProductPost(@PathVariable String email){
@@ -50,10 +55,9 @@ public class TransaksiController {
         return WebResponse.<ListGameResponse>builder().data(listGameResponse).build();
     }
 
-
     @PostMapping("/{email}")
     @ResponseStatus(HttpStatus.CREATED)
-    public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token){
+    public WebResponse<String> createTransaksi(@PathVariable String email, @RequestHeader("Authorization") String token) {
         KeranjangDto keranjang = getKeranjangByEmail(email);
         transaksiService.createTransaksi(keranjang,email,token);
         return WebResponse.<String>builder().data("Ok").build();
@@ -73,6 +77,8 @@ public class TransaksiController {
         if (response.getStatusCode() ==  HttpStatus.NOT_FOUND){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Keranjang tidak ditemukan");
         }
+        cartPublisher.sendViewCartRequest(email);
+        cartPublisher.getCartResponse();
         return  response.getBody();
     }
 
