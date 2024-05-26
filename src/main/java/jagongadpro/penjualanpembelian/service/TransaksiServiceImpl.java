@@ -20,6 +20,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
@@ -86,12 +90,23 @@ public class TransaksiServiceImpl implements  TransaksiService{
             games.add(gameForTransaksi);
 
         }
+        Date date = new Date();
+
+        // Convert java.util.Date to Instant
+        Instant instant = date.toInstant();
+
+        // Convert Instant to ZonedDateTime
+        ZonedDateTime zonedDateTime = instant.atZone(ZoneId.of("UTC"));
+
+        // Format ZonedDateTime to RFC 3339
+        String rfc3339String = zonedDateTime.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+
         String id =  UUID.randomUUID().toString();
         CreateTransaksiResponse createTransaksiResponse = CreateTransaksiResponse.builder()
                 .id(id)
                 .games(games)
                 .total_harga(keranjang.getTotalPrice())
-                .tanggal_pembayaran(new Date())
+                .tanggal_pembayaran(rfc3339String)
                 .pembeli_id(keranjang.getEmail())
                 .build();
         CompletableFuture<HashMap<String, String>> createTransaksi = restTemplateService.createTransaksi(createTransaksiResponse);

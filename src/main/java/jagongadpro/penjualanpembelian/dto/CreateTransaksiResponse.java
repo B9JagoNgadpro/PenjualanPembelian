@@ -19,7 +19,7 @@ public class CreateTransaksiResponse {
 
     private  Integer total_harga;
 
-    private Date tanggal_pembayaran;
+    private String tanggal_pembayaran;
 
     private  String pembeli_id;
 
